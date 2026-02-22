@@ -7,33 +7,27 @@
              Shell.NavBarIsVisible="False"
              NavigationPage.HasNavigationBar="False">
 
-    <ContentPage.BindingContext>
-        <viewmodels:LoginViewModel />
-    </ContentPage.BindingContext>
-
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
-            
-            <Color x:Key="PageBackgroundColorStart">#E94560</Color>
-            
-            <Color x:Key="PageBackgroundColorEnd">#B82E49</Color>
-            
-            <Color x:Key="FormContainerColor">#6A0000</Color>
 
-            <Color x:Key="FormContainerBackgroundColor">#A06A0000</Color>
+            <!-- Colors -->
+            <Color x:Key="PageBackgroundColor">#E2E1E1</Color>
+            <Color x:Key="AngelBlue">#0C517A</Color>
 
-            <Color x:Key="EntryBackgroundColor">#80400000</Color>
+            <Color x:Key="CardBackgroundColor">#F2FFFFFF</Color>
+            <Color x:Key="CardStrokeColor">#220C517A</Color>
+            <Color x:Key="EntryFillColor">#140C517A</Color>
+            <Color x:Key="EntryStrokeColor">#220C517A</Color>
 
-            <Color x:Key="LoginButtonColor">#A52A2A</Color>
+            <Color x:Key="PrimaryTextColor">#0C517A</Color>
+            <Color x:Key="PlaceholderColor">#7A0C517A</Color>
 
-            <Color x:Key="PrimaryTextColor">White</Color>
-            <Color x:Key="SecondaryTextColor">#FFE0E0</Color>
-            
-            <Color x:Key="PlaceholderColor">#FFC0C0</Color>
+            <Color x:Key="ButtonTextColor">#FFFFFF</Color>
+            <Color x:Key="ButtonBackgroundColor">#0C517A</Color>
 
-            <Color x:Key="AccentColorRed">#FF6B6B</Color>
+            <Color x:Key="ErrorColor">#D64040</Color>
 
             <Style TargetType="Label" x:Key="IconLabelStyle">
                 <Setter Property="FontFamily" Value="FontAwesomeSolid" />
@@ -41,7 +35,7 @@
                 <Setter Property="VerticalTextAlignment" Value="Center" />
                 <Setter Property="HorizontalTextAlignment" Value="Center" />
                 <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
-                <Setter Property="Margin" Value="0,0,5,0"/>
+                <Setter Property="Margin" Value="0,0,8,0"/>
             </Style>
 
             <Style TargetType="Entry">
@@ -49,99 +43,100 @@
                 <Setter Property="PlaceholderColor" Value="{StaticResource PlaceholderColor}" />
                 <Setter Property="BackgroundColor" Value="Transparent"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
-                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="HeightRequest" Value="52"/>
                 <Setter Property="FontSize" Value="16"/>
             </Style>
 
             <Style TargetType="Button" x:Key="LinkButton">
-                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}"/>
+                <Setter Property="TextColor" Value="{StaticResource AngelBlue}"/>
                 <Setter Property="BackgroundColor" Value="Transparent"/>
                 <Setter Property="FontSize" Value="Small"/>
                 <Setter Property="Padding" Value="0"/>
-                <Setter Property="FontAttributes" Value="None"/>
-                <!-- <Setter Property="TextDecorations" Value="Underline"/> Opcional -->
+                <Setter Property="FontAttributes" Value="Bold"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource PageBackgroundColorStart}" Offset="0.0" />
-                <GradientStop Color="{StaticResource PageBackgroundColorEnd}" Offset="1.0" />
-            </LinearGradientBrush>
-        </Grid.Background>
+    <!-- IMPORTANTE: BackgroundColor aquí, después de Resources -->
+    <ContentPage.BackgroundColor>
+        <StaticResource Key="PageBackgroundColor" />
+    </ContentPage.BackgroundColor>
 
+    <ContentPage.BindingContext>
+        <viewmodels:LoginViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid BackgroundColor="{StaticResource PageBackgroundColor}">
         <ScrollView>
-            <VerticalStackLayout Padding="30,0" Spacing="5" 
-                                 VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-
-                <!--<Label Text="Sign In"
-                       TextColor="{StaticResource PrimaryTextColor}"
-                       FontSize="36"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       Margin="0,40,0,20"/>-->
+            <VerticalStackLayout Padding="10,0"
+                                 Spacing="10"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Fill">
 
                 <Image Source="logo.png"
-                   Aspect="AspectFit"
-                   WidthRequest="200"
-                   HeightRequest="200"/>
+                       Aspect="AspectFit"
+                       WidthRequest="190"
+                       HeightRequest="190"
+                       HorizontalOptions="Center"/>
 
                 <Label Text="RAPHAEL"
-                    TextColor="{StaticResource FormContainerColor}"
-                    FontSize="12"
-                    FontAttributes="Bold"
-                    HorizontalOptions="Center"
-                    Margin="0,-50,0,20"/>
-                
-                <Label Text="by Milanes Service LLC"
-                    TextColor="{StaticResource PrimaryTextColor}"
-                    FontSize="12"
-                    FontAttributes="Bold"
-                    HorizontalOptions="Center"
-                    Margin="0,-20,0,20"/>
+                       TextColor="{StaticResource AngelBlue}"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       Margin="0,-45,0,10"/>
 
-                <Border BackgroundColor="{StaticResource FormContainerBackgroundColor}"
-                        StrokeThickness="0"
-                        Padding="25"
-                        StrokeShape="RoundRectangle 20" 
-                        HorizontalOptions="FillAndExpand"
-                        Margin="10,0">
+                <Label Text="by Milanes Transport LLC"
+                       TextColor="{StaticResource AngelBlue}"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       Margin="0,-10,0,18"/>
 
-                    <VerticalStackLayout Spacing="20">
-                        <!-- Username Entry -->
-                        <Border BackgroundColor="{StaticResource EntryBackgroundColor}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 25"
-                                Padding="15,0,10,0" HeightRequest="50">
+                <Border BackgroundColor="{StaticResource CardBackgroundColor}"
+                        Stroke="{StaticResource CardStrokeColor}"
+                        StrokeThickness="1"
+                        Padding="22"
+                        StrokeShape="RoundRectangle 24"
+                        HorizontalOptions="Fill"
+                        Margin="4,0">
+
+                    <VerticalStackLayout Spacing="18">
+
+                        <Border BackgroundColor="{StaticResource EntryFillColor}"
+                                Stroke="{StaticResource EntryStrokeColor}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="14,0,10,0"
+                                HeightRequest="52">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
                                 <Label Text="" Style="{StaticResource IconLabelStyle}" />
-                                <!-- fa-user -->
-                                <Entry Grid.Column="1" Placeholder="Username" Text="{Binding Username}"/>
+                                <Entry Grid.Column="1"
+                                       Placeholder="Username"
+                                       Text="{Binding Username}" />
                             </Grid>
                         </Border>
 
-                        <!-- Password Entry -->
-                        <Border BackgroundColor="{StaticResource EntryBackgroundColor}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 25"
-                                Padding="15,0,10,0" HeightRequest="50">
+                        <Border BackgroundColor="{StaticResource EntryFillColor}"
+                                Stroke="{StaticResource EntryStrokeColor}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="14,0,10,0"
+                                HeightRequest="52">
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                 <Label Text="" Style="{StaticResource IconLabelStyle}" />
-                                <!-- fa-lock -->
                                 <Entry Grid.Column="1"
                                        Placeholder="Password"
                                        Text="{Binding Password}"
                                        IsPassword="{Binding IsPasswordMasked}" />
                                 <Button Grid.Column="2"
-                                        Text="{Binding PasswordToggleIcon}" 
-                                    FontFamily="FontAwesomeSolid"
-                                        FontSize="20"
+                                        Text="{Binding PasswordToggleIcon}"
+                                        FontFamily="FontAwesomeSolid"
+                                        FontSize="18"
                                         Command="{Binding TogglePasswordMaskCommand}"
                                         BackgroundColor="Transparent"
-                                        TextColor="{StaticResource PrimaryTextColor}"
-                                        Padding="5"
+                                        TextColor="{StaticResource AngelBlue}"
+                                        Padding="6"
                                         WidthRequest="40"
                                         BorderColor="Transparent"
                                         BorderWidth="0"
@@ -149,49 +144,76 @@
                             </Grid>
                         </Border>
 
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5" Margin="0,5,0,0">
-                            <CheckBox IsChecked="{Binding RememberMe}" />
-                            <Label Grid.Column="1" Text="Remember me" 
-                                   TextColor="{StaticResource SecondaryTextColor}" 
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" Margin="0,2,0,0">
+                            <CheckBox IsChecked="{Binding RememberMe}"
+                                      Color="{StaticResource AngelBlue}" />
+                            <Label Grid.Column="1"
+                                   Text="Remember me"
+                                   TextColor="{StaticResource AngelBlue}"
                                    VerticalTextAlignment="Center"
                                    FontSize="Small"/>
                         </Grid>
 
-                        <Button Text="Log In"
-                                Command="{Binding LoginCommand}"
-                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" 
-                                BackgroundColor="{StaticResource LoginButtonColor}"
-                                TextColor="{StaticResource PrimaryTextColor}"
-                                HeightRequest="50"
-                                CornerRadius="25"
-                                FontSize="24"
-                                FontAttributes="Bold"
-                                Margin="0,10,0,0"/>
+                        <!-- Botón + loader iOS-like que sustituye el texto -->
+                        <Grid HeightRequest="56" Margin="0,6,0,0">
 
-                        <ActivityIndicator IsRunning="{Binding IsBusy}"
-                            IsVisible="{Binding IsBusy}"
-                            Color="{StaticResource PrimaryTextColor}"
-                            HorizontalOptions="Center"
-                            Margin="0,10,0,0"/>
+                            <!-- Botón real (lógica intacta) -->
+                            <Button Text=""
+                                    Command="{Binding LoginCommand}"
+                                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                                    BackgroundColor="{StaticResource ButtonBackgroundColor}"
+                                    TextColor="{StaticResource ButtonTextColor}"
+                                    HeightRequest="56"
+                                    CornerRadius="18"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    Padding="14,0" />
+
+                            <!-- Texto (solo cuando NO está busy) -->
+                            <Label Text="Log In"
+                                   InputTransparent="True"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   TextColor="{StaticResource ButtonTextColor}"
+                                   FontSize="18"
+                                   FontAttributes="Bold">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding IsBusy}"
+                                                 Value="True">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <!-- Spinner (solo cuando está busy) -->
+                            <ActivityIndicator InputTransparent="True"
+                                               IsRunning="{Binding IsBusy}"
+                                               IsVisible="{Binding IsBusy}"
+                                               Color="{StaticResource ButtonTextColor}"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                        </Grid>
+
 
                         <Label Text="{Binding ErrorMessage}"
-                            TextColor="{StaticResource AccentColorRed}"
-                            HorizontalOptions="Center"
-                            Margin="0,5,0,0"
-                            IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
-                        
+                               TextColor="{StaticResource ErrorColor}"
+                               HorizontalOptions="Center"
+                               Margin="0,4,0,0"
+                               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+
                     </VerticalStackLayout>
                 </Border>
 
-                <HorizontalStackLayout Spacing="5" HorizontalOptions="Center" Margin="0,25,0,25">
-                    <Label Text="RAPHAEL by" 
-                           TextColor="{StaticResource SecondaryTextColor}" 
+                <HorizontalStackLayout Spacing="6"
+                                       HorizontalOptions="Center"
+                                       Margin="0,22,0,25">
+                    <Label Text="RAPHAEL by"
+                           TextColor="{StaticResource AngelBlue}"
                            VerticalTextAlignment="Center"/>
-                    <Button Text="MILANES System"
+                    <Button Text="Milanes Transport"
                             Command="{Binding GoToMilanesPageCommand}"
-                            Style="{StaticResource LinkButton}"
-                            TextColor="{StaticResource AccentColorRed}"
-                            FontAttributes="Bold"/>
+                            Style="{StaticResource LinkButton}" />
                 </HorizontalStackLayout>
 
             </VerticalStackLayout>

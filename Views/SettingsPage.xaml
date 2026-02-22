@@ -6,14 +6,15 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Mercurio.Driver.Views.SettingsPage"
              x:DataType="viewmodels:SettingsViewModel"
-             BackgroundColor="#1C1C1E">
+             Title="SETTINGS"
+             BackgroundColor="#E2E1E1">
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, Auto" VerticalOptions="FillAndExpand">
             <Label Text="SETTINGS" TextColor="White" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
             <Image Grid.Column="1" HeightRequest="25" WidthRequest="25" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,10,0">
                 <Image.Source>
-                    <FontImageSource FontFamily="FontAwesomeSolid" Glyph="" Color="#9A0007" />
+                    <FontImageSource FontFamily="FontAwesomeSolid" Glyph="" Color="#0C517A" />
                 </Image.Source>
             </Image>
         </Grid>
@@ -37,7 +38,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:MapApp">
                     <VerticalStackLayout Spacing="0">
-                        <Grid Padding="15" ColumnSpacing="15" BackgroundColor="#2C2C2E">
+                        <Grid Padding="15" ColumnSpacing="15" BackgroundColor="#E2E1E1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>

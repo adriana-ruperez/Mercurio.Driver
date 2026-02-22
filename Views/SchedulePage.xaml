@@ -18,7 +18,7 @@
     </ContentPage.Resources>
         
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />
+        <mct:StatusBarBehavior StatusBarColor="#0C517A" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
 
     <Grid>
@@ -65,7 +65,7 @@
             <Button Text="TODAY'S SCHEDULE"
                     Command="{Binding GoToTodayScheduleCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                    BackgroundColor="#4CAF50"
+                    BackgroundColor="#0C517A"
                     TextColor="White"
                     HeightRequest="55"
                     CornerRadius="10"
@@ -77,7 +77,7 @@
             <Button Text="FUTURE SCHEDULE"
                     Command="{Binding GoToFutureScheduleCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                    BackgroundColor="#1976D2"
+                    BackgroundColor="#FF538CAC"
                     TextColor="White"
                     HeightRequest="55"
                     CornerRadius="10"
@@ -89,7 +89,7 @@
                            IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           Color="#B82E49"
+                           Color="#0C517A"
                            HeightRequest="50"
                            WidthRequest="50"/>
         

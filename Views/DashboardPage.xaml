@@ -41,7 +41,7 @@
                         
                         <Grid ColumnDefinitions="7, *">
                             
-                            <BoxView Grid.Column="0" Color="#008080" />
+                            <BoxView Grid.Column="0" Color="#0C517A" />
                           
                             <Grid Grid.Column="1" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Padding="15">
                                 <Label Text="Run Info" FontSize="Large" FontAttributes="Bold" Grid.Column="0" TextColor="White"/>
@@ -131,7 +131,7 @@
                     <!-- ==================================================================== -->
                     <Frame Style="{StaticResource CardViewStyle}" Padding="0">
                             <Grid ColumnDefinitions="7, *">
-                                <BoxView Grid.Column="0" Color="#8A2BE2" />
+                                <BoxView Grid.Column="0" Color="#FF76AAC7" />
                         
                             <VerticalStackLayout Grid.Column="1" Padding="15">
                                 <Label Text="Today's Events" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
@@ -154,7 +154,9 @@
             Text="SCHEDULE"
             Command="{Binding GoToScheduleCommand}"
             Style="{StaticResource PrimaryButtonStyle}"
-            Margin="15" />
+            HorizontalOptions="Fill"
+            Margin="15,0,15,70" />
+
     </Grid>
 
         <!--<Grid IsVisible="{Binding IsBusy}" BackgroundColor="#80000000">

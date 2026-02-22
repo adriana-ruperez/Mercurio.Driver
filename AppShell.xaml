@@ -10,7 +10,7 @@
     <Shell.Resources>
         <!-- Global style for the top navigation bar (Navbar) -->
         <Style TargetType="Shell" ApplyToDerivedTypes="True">
-            <Setter Property="Shell.BackgroundColor" Value="#B82E49" />
+            <Setter Property="Shell.BackgroundColor" Value="#0C517A" />
             <Setter Property="Shell.ForegroundColor" Value="White" />
             <Setter Property="Shell.TitleColor" Value="White" />
         </Style>
@@ -27,8 +27,7 @@
                                         <VisualState x:Name="Normal" />
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
-                                                <!-- Change the background to red -->
-                                                <Setter Property="BackgroundColor" Value="#B82E49" />
+                                                <Setter Property="BackgroundColor" Value="#0C517A" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -56,7 +55,7 @@
                                             <!-- When the item is selected, the text turns white -->
                                             <DataTrigger TargetType="Label"
                                                          Binding="{Binding Source={RelativeSource AncestorType={x:Type Grid}}, Path=BackgroundColor}"
-                                                         Value="#B82E49">
+                                                         Value="#0C517A">
                                                 <Setter Property="TextColor" Value="White" />
                                             </DataTrigger>
                                         </Style.Triggers>

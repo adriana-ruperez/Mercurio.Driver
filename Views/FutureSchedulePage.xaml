@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
              xmlns:dto="clr-namespace:Mercurio.Driver.DTOs"
              xmlns:converters="clr-namespace:Mercurio.Driver.Converters"
              x:Class="Mercurio.Driver.Views.FutureSchedulePage"
              x:DataType="viewmodels:FutureScheduleViewModel"
-             Title="Future Schedule">
+             Title="FUTURE SCHEDULE"
+             Shell.NavBarIsVisible="False"
+             ios:Page.UseSafeArea="True"
+             BackgroundColor="#F0F0F0">
 
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />
+        <mct:StatusBarBehavior StatusBarColor="#0C517A" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
-    
+
     <ContentPage.Resources>
         <converters:ScheduleColorConverter x:Key="ScheduleColorConverter" />
         <converters:ScheduleDisplayTimeConverter x:Key="ScheduleDisplayTimeConverter" />
@@ -28,167 +32,232 @@
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="WidthRequest" Value="25"/>
         </Style>
+
+        <!-- Top bar icon buttons -->
+        <Style TargetType="Button" x:Key="TopBarIconBtn">
+            <Setter Property="FontFamily" Value="FontAwesomeSolid" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="WidthRequest" Value="44" />
+            <Setter Property="HeightRequest" Value="44" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
     </ContentPage.Resources>
 
-    <RefreshView Command="{Binding LoadEventsCommand}" IsRefreshing="{Binding IsBusy}">
-        <Grid RowDefinitions="*" BackgroundColor="#F0F0F0">
+    <!-- Root: TopBar + Content -->
+    <Grid RowDefinitions="Auto,*" BackgroundColor="#F0F0F0">
 
-            <Grid>
-                <CollectionView ItemsSource="{Binding Events}"
-                                SelectionMode="None"
-                                IsVisible="{Binding HasEvents}">
-                    <CollectionView.ItemTemplate>
-                        
-                        <DataTemplate x:DataType="dto:ScheduleDto">
-                            <Border StrokeThickness="1" Stroke="#DDDDDD" Margin="10,0,10,10"
-        StrokeShape="RoundRectangle 5" Padding="0" BackgroundColor="White">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer 
-            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TodayScheduleViewModel}}, Path=SelectEventCommand}"
-            CommandParameter="{Binding .}" />
-                                </Border.GestureRecognizers>
-                                <Grid ColumnDefinitions="7, *">
-                                    <BoxView Grid.Column="0"
-                 Color="{Binding ., Converter={StaticResource ScheduleColorConverter}}"/>
-                                    <Grid Grid.Column="1" RowDefinitions="Auto, Auto">
+        <!-- ✅ TOP BAR MANUAL -->
+        <Grid Grid.Row="0"
+              BackgroundColor="#0C517A"
+              ColumnDefinitions="Auto,*,Auto"
+              Padding="{OnPlatform Android='8,25,8,10', iOS='8,18,8,10'}">
 
-                                        <Grid Grid.Row="0" Padding="10, 5"
-                  BackgroundColor="{Binding ., Converter={StaticResource ScheduleColorConverter}}">
-                                            <!-- Panel for normal cases -->
-                                            <Grid>
-                                                <Grid.Triggers>
-                                                    <MultiTrigger TargetType="Grid">
-                                                        <MultiTrigger.Conditions>
-                                                            <BindingCondition Binding="{Binding Name}" Value="Pull-in" />
-                                                        </MultiTrigger.Conditions>
-                                                        <Setter Property="IsVisible" Value="False" />
-                                                    </MultiTrigger>
-                                                    <MultiTrigger TargetType="Grid">
-                                                        <MultiTrigger.Conditions>
-                                                            <BindingCondition Binding="{Binding Name}" Value="Pull-out" />
-                                                        </MultiTrigger.Conditions>
-                                                        <Setter Property="IsVisible" Value="False" />
-                                                    </MultiTrigger>
-                                                </Grid.Triggers>
-                                                <Label Text="{Binding SpaceType}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start" />
-                                                <Label Text="{Binding FundingSource}" TextColor="White" FontAttributes="Bold" HorizontalOptions="End" />
+            <!-- Back -->
+            <Button Text=""
+                    Style="{StaticResource TopBarIconBtn}"
+                    Clicked="OnBackOrMenuClicked" />
+
+            <!-- Title -->
+            <Label Grid.Column="1"
+                   Text="FUTURE SCHEDULE"
+                   TextColor="White"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   LineBreakMode="TailTruncation" />
+
+            <!-- Menu -->
+            <Button Grid.Column="2"
+                    Text=""
+                    Style="{StaticResource TopBarIconBtn}"
+                    Clicked="OnMenuClicked" />
+        </Grid>
+
+        <!-- ✅ TU CONTENIDO ORIGINAL -->
+        <RefreshView Grid.Row="1"
+                     Command="{Binding LoadEventsCommand}"
+                     IsRefreshing="{Binding IsBusy}">
+
+            <Grid RowDefinitions="*" BackgroundColor="#F0F0F0">
+
+                <Grid>
+                    <CollectionView ItemsSource="{Binding Events}"
+                                    SelectionMode="None"
+                                    IsVisible="{Binding HasEvents}">
+                        <CollectionView.ItemTemplate>
+
+                            <DataTemplate x:DataType="dto:ScheduleDto">
+                                <Border StrokeThickness="1"
+                                        Stroke="#DDDDDD"
+                                        Margin="10,0,10,10"
+                                        StrokeShape="RoundRectangle 5"
+                                        Padding="0"
+                                        BackgroundColor="White">
+                                    <Border.GestureRecognizers>
+                                        <!-- ✅ FIX: AncestorType correcto (FutureScheduleViewModel) -->
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FutureScheduleViewModel}}, Path=SelectEventCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+
+                                    <Grid ColumnDefinitions="7, *">
+                                        <BoxView Grid.Column="0"
+                                                 Color="{Binding ., Converter={StaticResource ScheduleColorConverter}}"/>
+
+                                        <Grid Grid.Column="1" RowDefinitions="Auto, Auto">
+
+                                            <Grid Grid.Row="0" Padding="10, 5"
+                                                  BackgroundColor="{Binding ., Converter={StaticResource ScheduleColorConverter}}">
+                                                <!-- Panel for normal cases -->
+                                                <Grid>
+                                                    <Grid.Triggers>
+                                                        <MultiTrigger TargetType="Grid">
+                                                            <MultiTrigger.Conditions>
+                                                                <BindingCondition Binding="{Binding Name}" Value="Pull-in" />
+                                                            </MultiTrigger.Conditions>
+                                                            <Setter Property="IsVisible" Value="False" />
+                                                        </MultiTrigger>
+                                                        <MultiTrigger TargetType="Grid">
+                                                            <MultiTrigger.Conditions>
+                                                                <BindingCondition Binding="{Binding Name}" Value="Pull-out" />
+                                                            </MultiTrigger.Conditions>
+                                                            <Setter Property="IsVisible" Value="False" />
+                                                        </MultiTrigger>
+                                                    </Grid.Triggers>
+                                                    <Label Text="{Binding SpaceType}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start" />
+                                                    <Label Text="{Binding FundingSource}" TextColor="White" FontAttributes="Bold" HorizontalOptions="End" />
+                                                </Grid>
+
+                                                <!-- Panel for "Pull-in" case -->
+                                                <Label Text="Perform Pull In" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
+                                                            <Setter Property="IsVisible" Value="True" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+
+                                                <!-- Panel for "Pull-out" case -->
+                                                <Label Text="Perform Pull Out" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
+                                                            <Setter Property="IsVisible" Value="True" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
                                             </Grid>
-                                            <!-- Panel for "Pull-in" case -->
-                                            <Label Text="Perform Pull In" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
-                                                        <Setter Property="IsVisible" Value="True" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                            <!-- Panel for "Pull-out" case -->
-                                            <Label Text="Perform Pull Out" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
-                                                        <Setter Property="IsVisible" Value="True" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </Grid>
-                                        <!-- Event Body -->
-                                        <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="8">
-                                            <Grid ColumnDefinitions="*, Auto">
-                                                <StackLayout Orientation="Horizontal" Spacing="5">
-                                                    <Label Text="{Binding ETA, StringFormat='{0:hh\\:mm tt}'}" FontSize="20" FontAttributes="Bold" VerticalOptions="End"/>
-                                                    <Label Text="ETA" TextColor="Gray" FontSize="12" VerticalOptions="End" Margin="0,0,0,2"/>
-                                                </StackLayout>
-                                                <!-- RIGHT PANEL WITH CONDITIONAL LOGIC -->
-                                                <Grid Grid.Column="1">
-                                                    <!-- Panel for normal cases -->
+
+                                            <!-- Event Body -->
+                                            <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="8">
+                                                <Grid ColumnDefinitions="*, Auto">
                                                     <StackLayout Orientation="Horizontal" Spacing="5">
-                                                        <StackLayout.Triggers>
-                                                            <MultiTrigger TargetType="StackLayout">
-                                                                <MultiTrigger.Conditions>
-                                                                    <BindingCondition Binding="{Binding Name}" Value="Pull-in" />
-                                                                </MultiTrigger.Conditions>
-                                                                <Setter Property="IsVisible" Value="False" />
-                                                            </MultiTrigger>
-                                                            <MultiTrigger TargetType="StackLayout">
-                                                                <MultiTrigger.Conditions>
-                                                                    <BindingCondition Binding="{Binding Name}" Value="Pull-out" />
-                                                                </MultiTrigger.Conditions>
-                                                                <Setter Property="IsVisible" Value="False" />
-                                                            </MultiTrigger>
-                                                        </StackLayout.Triggers>
-                                                        <!--<Label Text="{Binding EventType, StringFormat='{}{0} Appt'}" FontSize="20" FontAttributes="Bold"/>-->
-                                                        <StackLayout Orientation="Horizontal" Spacing="5">
-                                                            <Label Text="{Binding EventType}" FontSize="20" FontAttributes="Bold"/>
-                                                            <Label Text="{Binding TripType, Converter={StaticResource TripTypeConverter}}" FontSize="20" FontAttributes="Bold"/>
-                                                        </StackLayout>
-                                                        <Label Text="{Binding ., Converter={StaticResource ScheduleArrowConverter}}" 
-                                   FontFamily="FontAwesomeSolid" FontSize="24"
-                                   TextColor="{Binding ., Converter={StaticResource ScheduleColorConverter}}"
-                                   VerticalTextAlignment="Center"
-                                   Rotation="{Binding ., Converter={StaticResource ScheduleRotationConverter}}"/>
+                                                        <Label Text="{Binding ETA, StringFormat='{0:hh\\:mm tt}'}" FontSize="20" FontAttributes="Bold" VerticalOptions="End"/>
+                                                        <Label Text="ETA" TextColor="Gray" FontSize="12" VerticalOptions="End" Margin="0,0,0,2"/>
                                                     </StackLayout>
-                                                    <!-- Panel for "Pull" cases -->
-                                                    <StackLayout Orientation="Horizontal" Spacing="8" IsVisible="False">
-                                                        <StackLayout.Triggers>
-                                                            <MultiTrigger TargetType="StackLayout">
-                                                                <MultiTrigger.Conditions>
-                                                                    <BindingCondition Binding="{Binding Name}" Value="Pull-in" />
-                                                                </MultiTrigger.Conditions>
-                                                                <Setter Property="IsVisible" Value="True" />
-                                                            </MultiTrigger>
-                                                            <MultiTrigger TargetType="StackLayout">
-                                                                <MultiTrigger.Conditions>
-                                                                    <BindingCondition Binding="{Binding Name}" Value="Pull-out" />
-                                                                </MultiTrigger.Conditions>
-                                                                <Setter Property="IsVisible" Value="True" />
-                                                            </MultiTrigger>
-                                                        </StackLayout.Triggers>
-                                                        <!-- Dynamic text for Pull In/Out -->
-                                                        <Label FontSize="20" FontAttributes="Bold">
-                                                            <Label.Triggers>
-                                                                <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
-                                                                    <Setter Property="Text" Value="Pull In" />
-                                                                </DataTrigger>
-                                                                <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
-                                                                    <Setter Property="Text" Value="Pull Out" />
-                                                                </DataTrigger>
-                                                            </Label.Triggers>
-                                                        </Label>
-                                                        <Label Text="" FontFamily="FontAwesomeSolid" FontSize="22" TextColor="Black" VerticalTextAlignment="Center"/>
-                                                        <!-- Car icon -->
+
+                                                    <!-- RIGHT PANEL WITH CONDITIONAL LOGIC -->
+                                                    <Grid Grid.Column="1">
+                                                        <!-- Panel for normal cases -->
+                                                        <StackLayout Orientation="Horizontal" Spacing="5">
+                                                            <StackLayout.Triggers>
+                                                                <MultiTrigger TargetType="StackLayout">
+                                                                    <MultiTrigger.Conditions>
+                                                                        <BindingCondition Binding="{Binding Name}" Value="Pull-in" />
+                                                                    </MultiTrigger.Conditions>
+                                                                    <Setter Property="IsVisible" Value="False" />
+                                                                </MultiTrigger>
+                                                                <MultiTrigger TargetType="StackLayout">
+                                                                    <MultiTrigger.Conditions>
+                                                                        <BindingCondition Binding="{Binding Name}" Value="Pull-out" />
+                                                                    </MultiTrigger.Conditions>
+                                                                    <Setter Property="IsVisible" Value="False" />
+                                                                </MultiTrigger>
+                                                            </StackLayout.Triggers>
+
+                                                            <StackLayout Orientation="Horizontal" Spacing="5">
+                                                                <Label Text="{Binding EventType}" FontSize="20" FontAttributes="Bold"/>
+                                                                <Label Text="{Binding TripType, Converter={StaticResource TripTypeConverter}}" FontSize="20" FontAttributes="Bold"/>
+                                                            </StackLayout>
+
+                                                            <Label Text="{Binding ., Converter={StaticResource ScheduleArrowConverter}}"
+                                                                   FontFamily="FontAwesomeSolid" FontSize="24"
+                                                                   TextColor="{Binding ., Converter={StaticResource ScheduleColorConverter}}"
+                                                                   VerticalTextAlignment="Center"
+                                                                   Rotation="{Binding ., Converter={StaticResource ScheduleRotationConverter}}"/>
+                                                        </StackLayout>
+
+                                                        <!-- Panel for "Pull" cases -->
+                                                        <StackLayout Orientation="Horizontal" Spacing="8" IsVisible="False">
+                                                            <StackLayout.Triggers>
+                                                                <MultiTrigger TargetType="StackLayout">
+                                                                    <MultiTrigger.Conditions>
+                                                                        <BindingCondition Binding="{Binding Name}" Value="Pull-in" />
+                                                                    </MultiTrigger.Conditions>
+                                                                    <Setter Property="IsVisible" Value="True" />
+                                                                </MultiTrigger>
+                                                                <MultiTrigger TargetType="StackLayout">
+                                                                    <MultiTrigger.Conditions>
+                                                                        <BindingCondition Binding="{Binding Name}" Value="Pull-out" />
+                                                                    </MultiTrigger.Conditions>
+                                                                    <Setter Property="IsVisible" Value="True" />
+                                                                </MultiTrigger>
+                                                            </StackLayout.Triggers>
+
+                                                            <!-- Dynamic text for Pull In/Out -->
+                                                            <Label FontSize="20" FontAttributes="Bold">
+                                                                <Label.Triggers>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
+                                                                        <Setter Property="Text" Value="Pull In" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
+                                                                        <Setter Property="Text" Value="Pull Out" />
+                                                                    </DataTrigger>
+                                                                </Label.Triggers>
+                                                            </Label>
+
+                                                            <Label Text="" FontFamily="FontAwesomeSolid" FontSize="22" TextColor="Black" VerticalTextAlignment="Center"/>
+                                                        </StackLayout>
+                                                    </Grid>
+                                                </Grid>
+
+                                                <Grid ColumnDefinitions="Auto, *">
+                                                    <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
+                                                    <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                                                        <Label Text="{Binding ., Converter={StaticResource ScheduleDisplayTimeConverter}}" />
+                                                        <Label Text="{Binding ., Converter={StaticResource ScheduleTimeLabelConverter}}" TextColor="Gray"/>
                                                     </StackLayout>
                                                 </Grid>
-                                            </Grid>
 
-                                            <Grid ColumnDefinitions="Auto, *">
-                                                <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
-                                                <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="5">
-                                                    <Label Text="{Binding ., Converter={StaticResource ScheduleDisplayTimeConverter}}" />
-                                                    <Label Text="{Binding ., Converter={StaticResource ScheduleTimeLabelConverter}}" TextColor="Gray"/>
-                                                </StackLayout>
-                                            </Grid>
-                                            <Grid ColumnDefinitions="Auto, *">
-                                                <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
-                                                <Label Grid.Column="1" Text="{Binding Patient}" />
-                                            </Grid>
-                                            <Grid ColumnDefinitions="Auto, *">
-                                                <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
-                                                <Label Grid.Column="1" Text="{Binding Address}" LineBreakMode="WordWrap"/>
-                                            </Grid>
-                                        </VerticalStackLayout>
+                                                <Grid ColumnDefinitions="Auto, *">
+                                                    <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
+                                                    <Label Grid.Column="1" Text="{Binding Patient}" />
+                                                </Grid>
+
+                                                <Grid ColumnDefinitions="Auto, *">
+                                                    <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
+                                                    <Label Grid.Column="1" Text="{Binding Address}" LineBreakMode="WordWrap"/>
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
-                <Label Text="There are no future trips to show."
-                       IsVisible="{Binding ShowNoEventsMessage}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       TextColor="Gray"
-                       FontSize="18"/>
+                    <Label Text="There are no future trips to show."
+                           IsVisible="{Binding ShowNoEventsMessage}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="Gray"
+                           FontSize="18"/>
+                </Grid>
             </Grid>
-        </Grid>
-    </RefreshView>
+        </RefreshView>
+
+    </Grid>
 </ContentPage>

@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+		<UseMaui>true</UseMaui>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Mercurio.Driver</RootNamespace>
-		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
 		
 		<!-- Propiedades Generales -->
-		<ApplicationTitle>Mercurio.Driver</ApplicationTitle>
-		<ApplicationId>com.mercurio.driver</ApplicationId>
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationTitle>Raphael by Milanes Transport</ApplicationTitle>
+		<ApplicationId>com.raphael.milanestransport</ApplicationId> <!-- Cambiar para producción -->
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<ApplicationVersion>3</ApplicationVersion>
 	</PropertyGroup>
 
 	<!-- =================================================================== -->
@@ -23,23 +23,22 @@
 	<!-- =================================================================== -->
 
 	<!-- Configuración para Android -->
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-android'">
-		<!-- Versión mínima recomendada para estabilidad (Android 7.0) -->
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-android'">
 		<SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<!-- Configuración para iOS -->
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-		<SupportedOSPlatformVersion>11.0</SupportedOSPlatformVersion>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+		<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<!-- Configuración para Mac Catalyst -->
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-maccatalyst'">
-		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-maccatalyst'">
+  		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<!-- Configuración para Windows -->
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'">
 		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<!-- Propiedades de publicación de Windows movidas aquí -->
@@ -61,18 +60,18 @@
 	<!-- =================================================================== -->
 	<!-- INICIO: CONFIGURACIÓN DE PUBLICACIÓN (RELEASE) PARA ANDROID -->
 	<!-- =================================================================== -->
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
 		<!-- Esta propiedad FUERZA la generación de un .apk en lugar de un .aab -->
-		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidPackageFormat>aab</AndroidPackageFormat>
 		<AndroidSigningV2Enabled>True</AndroidSigningV2Enabled>
 		<AndroidSigningV3Enabled>True</AndroidSigningV3Enabled>
 		
 		<!-- Aquí irán las propiedades de firma que el asistente de publicación añade automáticamente -->
 		<!-- Ejemplo: -->
 		<!-- <AndroidSigningKeyStore>mi-keystore.keystore</AndroidSigningKeyStore> -->
-		<!-- <AndroidSigningKeyAlias>mi_alias</AndroidSigningKeyAlias> -->
-		<!-- <AndroidSigningKeyPass>mi_password</AndroidSigningKeyPass> -->
-		<!-- <AndroidSigningStorePass>mi_password</AndroidSigningStorePass> -->
+		<!-- <AndroidSigningKeyAlias>mercurio</AndroidSigningKeyAlias> -->
+		<!-- <AndroidSigningKeyPass>Arellano@10</AndroidSigningKeyPass> -->
+		<!-- <AndroidSigningStorePass>Arellano@10</AndroidSigningStorePass> -->
 	</PropertyGroup>
 	<!-- =================================================================== -->
 	<!-- FIN: CONFIGURACIÓN DE PUBLICACIÓN (RELEASE) PARA ANDROID -->
@@ -80,7 +79,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#FFFFFF" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" />
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash_logo.svg" Color="#FFFFFF" BaseSize="300,375" />
 		<!-- Images -->

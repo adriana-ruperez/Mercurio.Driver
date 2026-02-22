@@ -6,7 +6,7 @@
 
     <!-- Raphael Theme-->
 
-    <Color x:Key="AppDarkBackgroundColor">#1C1C1E</Color>
+    <Color x:Key="AppDarkBackgroundColor">#E2E1E1</Color>
     
     <!-- Colores primarios en tonalidades de rojo -->
     <Color x:Key="Primary">#D32F2F</Color>
@@ -61,7 +61,7 @@
     <!-- Colores de Fondo -->
     <Color x:Key="PageBackgroundColor">#F0F0F0</Color>
     <Color x:Key="CardBackgroundColor">White</Color>
-    <Color x:Key="PrimaryColor">#B82E49</Color>
+    <Color x:Key="PrimaryColor">#0C517A</Color>
 
     <!-- Colores de Texto -->
     <Color x:Key="PrimaryTextColor">Black</Color>

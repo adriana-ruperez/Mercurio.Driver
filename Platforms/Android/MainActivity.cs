@@ -21,6 +21,7 @@ namespace Mercurio.Driver
             base.OnCreate(savedInstanceState);
             // Start and bind the service
             StartAndBindGpsService();
+            
         }
 
         private void StartAndBindGpsService()

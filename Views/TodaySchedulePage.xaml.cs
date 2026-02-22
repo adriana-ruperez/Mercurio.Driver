@@ -14,26 +14,24 @@ public partial class TodaySchedulePage : ContentPage
     {
         base.OnAppearing();
 
-        // We check if the BindingContext is of the correct type and call the command to reload.
         if (BindingContext is TodayScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
         {
             vm.LoadEventsCommand.Execute(null);
         }
     }
 
-    /*private readonly TodayScheduleViewModel _viewModel;
-
-    public TodaySchedulePage(TodayScheduleViewModel viewModel)
+    private async void OnBackOrMenuClicked(object sender, EventArgs e)
     {
-        InitializeComponent();
-        _viewModel = viewModel;
-        BindingContext = _viewModel;
+        // Si hay back stack, vuelve. Si no, abre el menú.
+        var navCount = Shell.Current?.Navigation?.NavigationStack?.Count ?? 0;
+        if (navCount > 1)
+            await Shell.Current.GoToAsync("..");
+        else
+            Shell.Current.FlyoutIsPresented = true;
     }
 
-    protected override async void OnAppearing()
+    private void OnMenuClicked(object sender, EventArgs e)
     {
-        base.OnAppearing();
-        // Load events when page appears
-        await _viewModel.LoadEventsCommand.ExecuteAsync(null);
-    }*/
+        Shell.Current.FlyoutIsPresented = true;
+    }
 }
