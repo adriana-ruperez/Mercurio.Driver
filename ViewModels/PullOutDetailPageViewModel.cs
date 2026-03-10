@@ -4,13 +4,14 @@ using Mercurio.Driver.DTOs;
 using System.Diagnostics;
 using Mercurio.Driver.Converters;
 using Mercurio.Driver.Services;
+using Mercurio.Driver.Views;
 
 namespace Mercurio.Driver.ViewModels
 {
     // We use QueryProperty to receive the ScheduleDto object during navigation
     [QueryProperty(nameof(Event), "EventDetail")]
     [QueryProperty(nameof(IsFirstEvent), "IsFirstEvent")]
-    public partial class PullOutDetailPageViewModel : ObservableObject, IDisposable
+    public partial class PullOutDetailPageViewModel : ObservableObject, IDisposable, IQueryAttributable
     {
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
@@ -51,6 +52,18 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private string _mapActionText;
 
+        [ObservableProperty]
+        private bool _isSignatureEntered;
+
+        [ObservableProperty]
+        private bool _showOdometerAction;
+
+        [ObservableProperty]
+        private bool _showSignatureAction;
+
+        [ObservableProperty]
+        private bool _showPerformAction;
+
         public PullOutDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService)
         {
             _scheduleService = scheduleService;
@@ -65,6 +78,102 @@ namespace Mercurio.Driver.ViewModels
                 IsTracking = _gpsService.IsTracking;
             }
         }
+
+        partial void OnIsFirstEventChanged(bool value) => UpdateUIState();
+        //partial void OnEventChanged(ScheduleDto value) => UpdateUIState();
+
+        private void UpdateUIState()
+        {
+            if (Event == null) return;
+
+            // TÍTULOS Y COLORES
+            PageTitle = Event.Name;
+            MapActionText = $"Maps - {Event.Name} Address";
+            EventColor = (Color)_colorConverter.Convert(Event, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
+
+            // LÓGICA DE VISIBILIDAD CRÍTICA:
+            // Se muestra si es Pull-out (que siempre suele ser el primero)
+            // O si es Pull-in Y es el primero de la lista (porque ya se completó el resto)
+            IsPrimaryActionVisible = Event.Name == "Pull-out" || (Event.Name == "Pull-in" && IsFirstEvent);
+
+            // Refrescar los estados internos de los botones (Odometer/Signature/Perform)
+            _ = RefreshStates();
+        }
+
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.TryGetValue("SignatureSaved", out var saved) && (bool)saved)
+            {
+
+                if (Event != null)
+                {
+
+                    Event.PassengerSignature = new byte[] { 1 };
+                }
+                _ = RefreshStates();
+            }
+        }
+
+        /*public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.TryGetValue("SignatureSaved", out var saved) && (bool)saved)
+            {
+                // Forzamos la recarga del objeto o simplemente marcamos como firmado
+                IsSignatureEntered = true;
+                _ = RefreshStates();
+            }
+        }*/
+
+
+        /*public async Task ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.ContainsKey("SignatureSaved"))
+            {
+                IsSignatureEntered = true;
+                await RefreshStates();
+            }
+        }*/
+
+        private async Task RefreshStates()
+        {
+            if (Event == null) return;
+
+            IsOdometerEntered = Event.Odometer != null && Event.Odometer > -1;
+            // We simulate the signature verification by looking if it already exists in the object
+            IsSignatureEntered = !string.IsNullOrEmpty(Event.PassengerSignature?.ToString());
+
+            if (Event.Name == "Pull-in")
+            {
+                // Pull-in sequence: Odometer -> Signature -> Perform
+                ShowOdometerAction = !IsOdometerEntered;
+                ShowSignatureAction = IsOdometerEntered && !IsSignatureEntered;
+                ShowPerformAction = IsOdometerEntered && IsSignatureEntered;
+            }
+            else // Pull-out
+            {
+                // Normal sequence: Odometer -> Perform
+                ShowOdometerAction = !IsOdometerEntered;
+                ShowSignatureAction = false;
+                ShowPerformAction = IsOdometerEntered;
+            }
+
+            // Reporting changes to ensure UI IsVisible is triggered
+            OnPropertyChanged(nameof(ShowOdometerAction));
+            OnPropertyChanged(nameof(ShowSignatureAction));
+            OnPropertyChanged(nameof(ShowPerformAction));
+        }
+        [RelayCommand]
+        private async Task GoToSignature()
+        {
+            if (IsBusy) return;
+
+            await Shell.Current.GoToAsync(nameof(SignaturePage), new Dictionary<string, object>
+        {
+            { "ScheduleId", Event.Id },
+            { "IsDriverSignature", true } // This activates the legal text
+        });
+        }
+
 
         [RelayCommand(CanExecute = nameof(CanExecuteAction))]
         private async Task OdometerOrPerformAction()
@@ -148,7 +257,8 @@ namespace Mercurio.Driver.ViewModels
 
                     if (success)
                     {
-                        IsOdometerEntered = true;
+                        //IsOdometerEntered = true;
+                        await RefreshStates();
                         await Shell.Current.DisplayAlert("Success", "Odometer reading has been saved.", "OK");
                     }
                     else
@@ -389,6 +499,8 @@ namespace Mercurio.Driver.ViewModels
 
                 EventColor = (Color)_colorConverter.Convert(value, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
                 IsOdometerEntered = value.Odometer != null && value.Odometer > -1;
+
+                _ = RefreshStates();
             }
             else
             {               

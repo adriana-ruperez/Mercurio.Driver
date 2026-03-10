@@ -66,6 +66,8 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidSigningV2Enabled>True</AndroidSigningV2Enabled>
 		<AndroidSigningV3Enabled>True</AndroidSigningV3Enabled>
+		<ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 		
 		<!-- Aquí irán las propiedades de firma que el asistente de publicación añade automáticamente -->
 		<!-- Ejemplo: -->
@@ -73,6 +75,34 @@
 		<!-- <AndroidSigningKeyAlias>mi_alias</AndroidSigningKeyAlias> -->
 		<!-- <AndroidSigningKeyPass>mi_password</AndroidSigningKeyPass> -->
 		<!-- <AndroidSigningStorePass>mi_password</AndroidSigningStorePass> -->
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+	  <ApplicationVersion>2</ApplicationVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+	  <ApplicationVersion>2</ApplicationVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+	  <ApplicationVersion>2</ApplicationVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+	  <ApplicationVersion>2</ApplicationVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+	  <ApplicationVersion>2</ApplicationVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+	  <ApplicationVersion>2</ApplicationVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+	  <ApplicationVersion>2</ApplicationVersion>
 	</PropertyGroup>
 	<!-- =================================================================== -->
 	<!-- FIN: CONFIGURACIÓN DE PUBLICACIÓN (RELEASE) PARA ANDROID -->

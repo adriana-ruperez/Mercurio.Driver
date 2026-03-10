@@ -97,10 +97,14 @@ namespace Mercurio.Driver.ViewModels
 
             // The first event in the current list is the only "active" one.
             // We compare the selected event with the first element of the collection.
-            bool isFirstEvent = Events.FirstOrDefault() == selectedEvent;
+            bool isFirstEvent = Events.IndexOf(selectedEvent) == 0;
+            //bool isFirstEvent = Events.FirstOrDefault() == selectedEvent;
             
             if (selectedEvent.Name == "Pull-in" || selectedEvent.Name == "Pull-out")
-            {               
+            {
+                //if (selectedEvent.Name == "Pull-in")
+                    //isFirstEvent = Events.Count == 1; // Pull-in can only be the first if it's the only event
+
                 await Shell.Current.GoToAsync(nameof(PullOutDetailPage), new Dictionary<string, object>
                 {
                     { "EventDetail", selectedEvent },

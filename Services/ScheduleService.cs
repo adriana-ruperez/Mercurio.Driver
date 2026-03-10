@@ -69,7 +69,7 @@ namespace Mercurio.Driver.Services
                 return new List<ScheduleDto>();
 
             var dateString = date.ToString("yyyy-MM-dd");
-            //dateString = "2025-09-15"; // esto es para probar
+            //dateString = "2025-04-23"; // esto es para probar
             var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
           
             var requestUri = $"api/Schedules/driver/pending?runLogin={encodedRunLogin}&date={dateString}";
@@ -77,7 +77,7 @@ namespace Mercurio.Driver.Services
             try
             {
                 var response = await _httpClient.GetAsync(requestUri);
-
+                 
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();

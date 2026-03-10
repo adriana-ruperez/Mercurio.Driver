@@ -186,6 +186,13 @@
                         <Label Text="{Binding Event.Phone}" Style="{StaticResource DetailValueLabel}"/>
                     </VerticalStackLayout>
 
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Comment -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="COMMENT" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Text="{Binding Event.Comment}" Style="{StaticResource DetailValueLabel}" LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
 
                 </VerticalStackLayout>
             </Border>
