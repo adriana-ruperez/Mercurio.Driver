@@ -511,6 +511,46 @@ namespace Mercurio.Driver.ViewModels
                 BuildActionsList(); // Update the UI
                 if (!_gpsService.IsTracking)
                     _gpsService.StartTracking(Event.VehicleRouteId);
+
+                // Enviar notificación al miembro a través del servicio de Zonitel
+                HttpClient client = new HttpClient();
+                ApiZonitelService _apiZonitelService = new ApiZonitelService(client);
+
+                // Limpiar el teléfono (Quitar espacios, guiones y el prefijo +1 si existe)
+                string cleanPhone = Event.Phone.Trim();
+
+                // Si empieza con +1, quitamos los primeros 2 caracteres
+                if (cleanPhone.StartsWith("+1"))
+                {
+                    cleanPhone = cleanPhone.Substring(2);
+                }
+                // Si por casualidad empieza con 1 (sin el +), quitamos el primer caracter
+                else if (cleanPhone.StartsWith("1") && cleanPhone.Length > 10)
+                {
+                    cleanPhone = cleanPhone.Substring(1);
+                }
+
+                // Limpieza adicional por si el número viene con formato (786) 483-6314
+                cleanPhone = new string(cleanPhone.Where(char.IsDigit).ToArray());
+
+                try
+                {
+                    bool isSent = await _apiZonitelService.SendSMSMessageDriverArrivesAtThePickupLocation(cleanPhone);
+                    if (isSent)
+                    {
+                        await Shell.Current.DisplayAlert("Success", "Notification sent successfully to the passenger.", "OK");
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Error", "The SMS could not be sent. Please check the API logs or connection.", "OK");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await Shell.Current.DisplayAlert("Error", $"An error occurred while sending the SMS: {ex.Message}","OK");
+                    throw;
+                }
+
             }
             else
             {
