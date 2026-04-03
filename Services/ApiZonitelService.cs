@@ -40,9 +40,9 @@ namespace Mercurio.Driver.Services
             {
                 string endpoint = $"api/v{_settings.Version}/integrations/sms/send";
 
-                string messageText = $@"Your driver is waiting.
-                                    Proceed to meet your driver.
-                                    Visit www.etamilanes.com";
+                string messageText = "Your driver is waiting.\n" +
+                                    $"Proceed to meet your driver.\n" +
+                                    "Visit www.etamilanes.com";
 
                 string messageTextOld = $@"Your driver has arrived at the pickup location.
                                     Please proceed to meet your driver.
