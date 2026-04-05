@@ -10,16 +10,16 @@ public partial class FutureSchedulePage : ContentPage
         BindingContext = viewModel;
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
+    // protected override void OnAppearing()
+    // {
+    //     base.OnAppearing();
 
-        // ✅ FIX: ViewModel correcto
-        if (BindingContext is FutureScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
-        {
-            vm.LoadEventsCommand.Execute(null);
-        }
-    }
+    //     // ✅ FIX: ViewModel correcto
+    //     if (BindingContext is FutureScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
+    //     {
+    //         vm.LoadEventsCommand.Execute(null);
+    //     }
+    // }
 
     private async void OnBackOrMenuClicked(object sender, EventArgs e)
     {

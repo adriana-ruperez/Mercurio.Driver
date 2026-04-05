@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Mercurio.Driver.Views; 
 using System.Diagnostics;
 using System.Web; 
+using Microsoft.Maui.Storage;
 
 namespace Mercurio.Driver.ViewModels
 {
@@ -17,12 +18,16 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
-        public ScheduleViewModel() { }
+        public ScheduleViewModel()
+        {
+            RunLogin = Preferences.Get("runLogin", "");
+        }
 
         [RelayCommand]
         private async Task GoToTodaySchedule()
         {
             if (IsBusy) return; // Avoid multiple clicks
+            RunLogin = NormalizeRunLogin(RunLogin);
 
             if (string.IsNullOrWhiteSpace(RunLogin))
             {
@@ -33,6 +38,8 @@ namespace Mercurio.Driver.ViewModels
             try
             {
                 IsBusy = true; 
+
+                Preferences.Set("runLogin", RunLogin);
 
                 var navigationParameter = new Dictionary<string, object>
                 {
@@ -56,6 +63,7 @@ namespace Mercurio.Driver.ViewModels
         private async Task GoToFutureSchedule()
         {
             if (IsBusy) return;
+            RunLogin = NormalizeRunLogin(RunLogin);
 
             if (string.IsNullOrWhiteSpace(RunLogin))
             {
@@ -66,6 +74,7 @@ namespace Mercurio.Driver.ViewModels
             try
             {
                 IsBusy = true;
+                Preferences.Set("runLogin", RunLogin);
                 await Shell.Current.GoToAsync(nameof(FutureSchedulePage), new Dictionary<string, object>
                 {
                     { "runLogin", RunLogin }
@@ -79,6 +88,20 @@ namespace Mercurio.Driver.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+        private static string NormalizeRunLogin(string input)
+        {
+            if (input == null) return "";
+
+            var s = input.Trim();
+            s = s.Replace('\u00A0', ' ').Trim();   // NBSP -> espacio normal
+            s = s.Replace("\r", "").Replace("\n", "").Replace("\t", "").Trim();
+
+            while (s.Contains("  "))
+                s = s.Replace("  ", " ");
+
+            return s;
         }
     }
 }

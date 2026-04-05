@@ -10,15 +10,15 @@ public partial class TodaySchedulePage : ContentPage
         BindingContext = viewModel;
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
+    // protected override void OnAppearing()
+    // {
+    //     base.OnAppearing();
 
-        if (BindingContext is TodayScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
-        {
-            vm.LoadEventsCommand.Execute(null);
-        }
-    }
+    //     if (BindingContext is TodayScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
+    //     {
+    //         vm.LoadEventsCommand.Execute(null);
+    //     }
+    // }
 
     private async void OnBackOrMenuClicked(object sender, EventArgs e)
     {

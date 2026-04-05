@@ -4,17 +4,28 @@ using Mercurio.Driver.DTOs;
 using System.Diagnostics;
 using Mercurio.Driver.Converters;
 using Mercurio.Driver.Services;
+using Mercurio.Driver.Views;
 
 namespace Mercurio.Driver.ViewModels
 {
     // We use QueryProperty to receive the ScheduleDto object during navigation
     [QueryProperty(nameof(Event), "EventDetail")]
     [QueryProperty(nameof(IsFirstEvent), "IsFirstEvent")]
-    public partial class PullOutDetailPageViewModel : ObservableObject, IDisposable
+    [QueryProperty(nameof(PendingEventsCount), "PendingEventsCount")]
+    [QueryProperty(nameof(SignatureSaved), "SignatureSaved")] // ✅ added (return from SignaturePage)
+    public partial class PullOutDetailPageViewModel : ObservableObject, IDisposable, IQueryAttributable
     {
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
         private readonly IMapService _mapService;
+
+        [ObservableProperty]
+        private int pendingEventsCount;
+
+        [ObservableProperty]
+        private bool signatureSaved; // ✅ added
+
+        private bool _awaitingSignature; // ✅ added (internal flow flag)
 
         [ObservableProperty]
         private ScheduleDto _event;
@@ -28,7 +39,7 @@ namespace Mercurio.Driver.ViewModels
         private bool _isOdometerEntered;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(OdometerOrPerformActionCommand))] 
+        [NotifyCanExecuteChangedFor(nameof(OdometerOrPerformActionCommand))]
         private bool _isBusy;
 
         [ObservableProperty]
@@ -51,6 +62,20 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private string _mapActionText;
 
+
+        [ObservableProperty]
+        private bool _isSignatureEntered;
+
+        [ObservableProperty]
+        private bool _showOdometerAction;
+
+        [ObservableProperty]
+        private bool _showSignatureAction;
+
+        [ObservableProperty]
+        private bool _showPerformAction;
+
+
         public PullOutDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService)
         {
             _scheduleService = scheduleService;
@@ -64,6 +89,101 @@ namespace Mercurio.Driver.ViewModels
                 // Synchronize initial state
                 IsTracking = _gpsService.IsTracking;
             }
+        }
+
+        partial void OnIsFirstEventChanged(bool value) => UpdateUIState();
+        //partial void OnEventChanged(ScheduleDto value) => UpdateUIState();
+
+        private void UpdateUIState()
+        {
+            if (Event == null) return;
+
+            // TÍTULOS Y COLORES
+            PageTitle = Event.Name;
+            MapActionText = $"Maps - {Event.Name} Address";
+            EventColor = (Color)_colorConverter.Convert(Event, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
+
+            // LÓGICA DE VISIBILIDAD CRÍTICA:
+            // Se muestra si es Pull-out (que siempre suele ser el primero)
+            // O si es Pull-in Y es el primero de la lista (porque ya se completó el resto)
+            IsPrimaryActionVisible = Event.Name == "Pull-out" || (Event.Name == "Pull-in" && IsFirstEvent);
+
+            // Refrescar los estados internos de los botones (Odometer/Signature/Perform)
+            _ = RefreshStates();
+        }
+
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.TryGetValue("SignatureSaved", out var saved) && (bool)saved)
+            {
+
+                if (Event != null)
+                {
+
+                    Event.PassengerSignature = new byte[] { 1 };
+                }
+                _ = RefreshStates();
+            }
+        }
+
+        /*public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.TryGetValue("SignatureSaved", out var saved) && (bool)saved)
+            {
+                // Forzamos la recarga del objeto o simplemente marcamos como firmado
+                IsSignatureEntered = true;
+                _ = RefreshStates();
+            }
+        }*/
+
+
+        /*public async Task ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.ContainsKey("SignatureSaved"))
+            {
+                IsSignatureEntered = true;
+                await RefreshStates();
+            }
+        }*/
+
+        private async Task RefreshStates()
+        {
+            if (Event == null) return;
+
+            IsOdometerEntered = Event.Odometer != null && Event.Odometer > -1;
+            // We simulate the signature verification by looking if it already exists in the object
+            IsSignatureEntered = !string.IsNullOrEmpty(Event.PassengerSignature?.ToString());
+
+            if (Event.Name == "Pull-in")
+            {
+                // Pull-in sequence: Odometer -> Signature -> Perform
+                ShowOdometerAction = !IsOdometerEntered;
+                ShowSignatureAction = IsOdometerEntered && !IsSignatureEntered;
+                ShowPerformAction = IsOdometerEntered && IsSignatureEntered;
+            }
+            else // Pull-out
+            {
+                // Normal sequence: Odometer -> Perform
+                ShowOdometerAction = !IsOdometerEntered;
+                ShowSignatureAction = false;
+                ShowPerformAction = IsOdometerEntered;
+            }
+
+            // Reporting changes to ensure UI IsVisible is triggered
+            OnPropertyChanged(nameof(ShowOdometerAction));
+            OnPropertyChanged(nameof(ShowSignatureAction));
+            OnPropertyChanged(nameof(ShowPerformAction));
+        }
+        [RelayCommand]
+        private async Task GoToSignature()
+        {
+            if (IsBusy) return;
+
+            await Shell.Current.GoToAsync(nameof(SignaturePage), new Dictionary<string, object>
+        {
+            { "ScheduleId", Event.Id },
+            { "IsDriverSignature", true } // This activates the legal text
+        });
         }
 
         [RelayCommand(CanExecute = nameof(CanExecuteAction))]
@@ -83,7 +203,6 @@ namespace Mercurio.Driver.ViewModels
 
         private bool CanExecuteAction() => !IsBusy;
 
-        
         private async Task<bool> CheckAndRequestLocationPermissionAsync()
         {
             var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
@@ -121,7 +240,7 @@ namespace Mercurio.Driver.ViewModels
             {
                 _gpsService.IsTrackingChanged -= OnGpsTrackingChanged;
             }
-        }       
+        }
 
         private async Task EnterOdometer()
         {
@@ -148,7 +267,8 @@ namespace Mercurio.Driver.ViewModels
 
                     if (success)
                     {
-                        IsOdometerEntered = true;
+                        // IsOdometerEntered = true;
+                        await RefreshStates();
                         await Shell.Current.DisplayAlert("Success", "Odometer reading has been saved.", "OK");
                     }
                     else
@@ -175,7 +295,7 @@ namespace Mercurio.Driver.ViewModels
 
             try
             {
-                
+                // ✅ Pull-out flow: unchanged (permission + perform)
                 if (Event.Name == "Pull-out")
                 {
                     var hasPermission = await CheckAndRequestLocationPermissionAsync();
@@ -185,34 +305,41 @@ namespace Mercurio.Driver.ViewModels
                         await Shell.Current.DisplayAlert("Permission Required", "Tracking cannot be started without location permission.", "OK");
                         return; // We leave the method
                     }
+
+                    await CompletePerformAsync();
+                    return;
                 }
 
-                TimeSpan? oldEta = Event.ETA;
-                Event.Perform = DateTime.Now.TimeOfDay;
-                Event.Performed = true;
-                Event.ETA = Event.Perform;
-
-                bool success = await _scheduleService.UpdateScheduleAsync(Event);
-
-                if (success)
+                // ✅ Pull-in flow: require odometer + signature before completing perform
+                if (Event.Name == "Pull-in")
                 {
-                    if (Event.Name == "Pull-out")
+                    // 1) Odometer first (reuses existing logic)
+                    if (!IsOdometerEntered)
                     {
-                        _gpsService.StartTracking(Event.VehicleRouteId);
+                        await EnterOdometer();
+                        if (!IsOdometerEntered) return; // cancelled/invalid -> stop here
                     }
-                    else if (Event.Name == "Pull-in")
+
+                    // 2) Signature next (navigate to SignaturePage if not saved yet)
+                    if (!SignatureSaved)
                     {
-                        _gpsService.StopTracking();
+                        _awaitingSignature = true;
+
+                        await Shell.Current.GoToAsync(nameof(SignaturePage), new Dictionary<string, object>
+                        {
+                            { "ScheduleId", Event.Id }
+                        });
+
+                        return; // flow continues when SignatureSaved returns
                     }
-                    await Shell.Current.GoToAsync("..");
+
+                    // 3) Complete perform (stop tracking + update schedule + go back)
+                    await CompletePerformAsync();
+                    return;
                 }
-                else
-                {
-                    Event.Perform = null;
-                    Event.Performed = false;
-                    Event.ETA = oldEta;
-                    await Shell.Current.DisplayAlert("Error", "The action could not be performed. Please check your connection and try again.", "OK");
-                }
+
+                // Fallback: keep original behavior for any other unexpected event name
+                await CompletePerformAsync();
             }
             catch (Exception ex)
             {
@@ -226,61 +353,36 @@ namespace Mercurio.Driver.ViewModels
             }
         }
 
-        /*private async Task PerformAction()
+        // ✅ Added: same logic you already had inside PerformAction, extracted to avoid duplication
+        private async Task CompletePerformAsync()
         {
-            if (IsBusy) return; // Prevent user from clicking multiple times
+            TimeSpan? oldEta = Event.ETA;
+            Event.Perform = DateTime.Now.TimeOfDay;
+            Event.Performed = true;
+            Event.ETA = Event.Perform;
 
-            IsBusy = true;
+            bool success = await _scheduleService.UpdateScheduleAsync(Event);
 
-            try
-            {               
-                Event.Performed = true; 
-
-                bool success = await _scheduleService.UpdateScheduleAsync(Event);
-
-                if (success)
-                {                  
-                    if (Event.Name == "Pull-out")
-                    {
-                        // The ViewModel just gives the order. The service takes care of the rest.
-                        _gpsService?.StartTracking(Event.VehicleRouteId);
-
-                        //StartGpsTracking();
-                        //Debug.WriteLine("GPS tracking started due to Pull-out event.");
-                    }
-                    else if (Event.Name == "Pull-in")
-                    {
-                        _gpsService?.StopTracking();
-                        //StopGpsTracking();
-                        //Debug.WriteLine("GPS tracking stopped due to Pull-in event.");
-                    }
-                    // We navigate back in the navigation stack.
-                    // ".." is the shell syntax for going to the previous page.
-                    await Shell.Current.GoToAsync("..");
-                }
-                else
+            if (success)
+            {
+                if (Event.Name == "Pull-out")
                 {
-                    // If it fails, we inform the user and revert the change locally
-                    // to maintain state consistency.
-                    Event.Performed = false;
-                    await Shell.Current.DisplayAlert("Error", "Could not perform the action. Please check your connection and try again.", "OK");
+                    _gpsService.StartTracking(Event.VehicleRouteId);
                 }
+                else if (Event.Name == "Pull-in")
+                {
+                    _gpsService.StopTracking();
+                }
+                await Shell.Current.GoToAsync("..");
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine($"Error performing action: {ex.Message}");
-                Event.Performed = false; // Rollback in case of exception
-                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred.", "OK");
+                Event.Perform = null;
+                Event.Performed = false;
+                Event.ETA = oldEta;
+                await Shell.Current.DisplayAlert("Error", "The action could not be performed. Please check your connection and try again.", "OK");
             }
-            finally
-            {
-                // We ensure that the 'IsBusy' status is always reset
-                IsBusy = false;
-            }
-
-            // Alerta de confirmación
-            //await Shell.Current.DisplayAlert("Action Performed", "The 'Perform' action has been completed successfully.", "OK");
-        }*/
+        }
 
         [RelayCommand]
         private async Task GoToOdometer()
@@ -376,6 +478,10 @@ namespace Mercurio.Driver.ViewModels
         // This method is automatically fired when the 'Event' property receives a value
         partial void OnEventChanged(ScheduleDto value)
         {
+            // ✅ reset signature flow state when a new event arrives
+            SignatureSaved = false;
+            _awaitingSignature = false;
+
             if (value != null)
             {
                 PageTitle = value.Name; // "Pull-out" o "Pull-in"
@@ -385,25 +491,60 @@ namespace Mercurio.Driver.ViewModels
                 //    - A "Pull-out" is always the first event, so it is always actionable.
                 //    - A "Pull-in" is only actionable if it is the only event left in the list
                 //      (which means IsFirstEvent will be true for it).
-                IsPrimaryActionVisible = value.Name == "Pull-out" || (value.Name == "Pull-in" && IsFirstEvent);
+                IsPrimaryActionVisible =
+                    value.Name == "Pull-out"
+                    || (value.Name == "Pull-in" && PendingEventsCount == 1);
 
                 EventColor = (Color)_colorConverter.Convert(value, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
                 IsOdometerEntered = value.Odometer != null && value.Odometer > -1;
+                _ = RefreshStates();
             }
             else
-            {               
+            {
                 EventColor = Colors.Gray;
                 IsOdometerEntered = false;
             }
         }
 
-        public void StartGpsTracking() 
+        partial void OnPendingEventsCountChanged(int value)
+        {
+            if (Event == null) return;
+
+            IsPrimaryActionVisible =
+                Event.Name == "Pull-out"
+                || (Event.Name == "Pull-in" && value == 1);
+        }
+
+        // ✅ Added: when returning from SignaturePage with SignatureSaved=true, finish the perform flow
+        partial void OnSignatureSavedChanged(bool value)
+        {
+            if (!value) return;
+            if (!_awaitingSignature) return;
+
+            _awaitingSignature = false;
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (IsBusy) return;
+
+                IsBusy = true;
+                try
+                {
+                    await CompletePerformAsync();
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
+            });
+        }
+
+        public void StartGpsTracking()
         {
             if (_gpsService.IsTracking) return;
 
             _gpsService.StartTracking(Event.VehicleRouteId);
             IsTracking = _gpsService.IsTracking;
-
         }
 
         public void StopGpsTracking()
@@ -413,6 +554,5 @@ namespace Mercurio.Driver.ViewModels
             _gpsService.StopTracking();
             IsTracking = _gpsService.IsTracking;
         }
-
     }
 }

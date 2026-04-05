@@ -6,6 +6,7 @@ using Mercurio.Driver.Views;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Microsoft.Maui.Storage;
 
 namespace Mercurio.Driver.ViewModels
 {
@@ -45,6 +46,13 @@ namespace Mercurio.Driver.ViewModels
         private async Task LoadEventsAsync()
         {
             if (IsBusy) return;
+
+            if (string.IsNullOrWhiteSpace(RunLogin))
+            {
+                RunLogin = Preferences.Get("runLogin", "");
+                if (string.IsNullOrWhiteSpace(RunLogin))
+                    return;
+            }
 
             try
             {
@@ -86,6 +94,7 @@ namespace Mercurio.Driver.ViewModels
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
+                Preferences.Set("runLogin", value);
                 _ = LoadEventsAsync();
             }
         }

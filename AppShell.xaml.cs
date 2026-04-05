@@ -24,8 +24,7 @@ namespace Mercurio.Driver
             Routing.RegisterRoute(nameof(ContactPage), typeof(ContactPage));
 
             //Routing.RegisterRoute("LoginPage", typeof(Views.LoginPage));
-            //Routing.RegisterRoute("HomePage", typeof(Views.HomePage));         
-
+            //Routing.RegisterRoute("HomePage", typeof(Views.HomePage));   
         }       
        
     }

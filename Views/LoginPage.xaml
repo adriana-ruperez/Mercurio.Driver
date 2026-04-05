@@ -8,9 +8,9 @@
              NavigationPage.HasNavigationBar="False">
 
     <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
-            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+            <ResourceDictionary>
+                <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+                <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
 
             <!-- Colors -->
             <Color x:Key="PageBackgroundColor">#E2E1E1</Color>
@@ -79,19 +79,6 @@
                        HeightRequest="190"
                        HorizontalOptions="Center"/>
 
-                <Label Text="RAPHAEL"
-                       TextColor="{StaticResource AngelBlue}"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       Margin="0,-45,0,10"/>
-
-                <Label Text="by Milanes Transport LLC"
-                       TextColor="{StaticResource AngelBlue}"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       Margin="0,-10,0,18"/>
 
                 <Border BackgroundColor="{StaticResource CardBackgroundColor}"
                         Stroke="{StaticResource CardStrokeColor}"

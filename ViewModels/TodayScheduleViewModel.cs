@@ -5,6 +5,7 @@ using Mercurio.Driver.Services;
 using Mercurio.Driver.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Microsoft.Maui.Storage;
 
 namespace Mercurio.Driver.ViewModels
 {
@@ -47,8 +48,15 @@ namespace Mercurio.Driver.ViewModels
         [RelayCommand]
         private async Task LoadEventsAsync()
         {
-            if (IsBusy || string.IsNullOrWhiteSpace(RunLogin))
-                return;
+            if (IsBusy) return;
+
+            // ✅ Fallback robusto: si RunLogin no llegó por Shell, lo recupero
+            if (string.IsNullOrWhiteSpace(RunLogin))
+            {
+                RunLogin = Preferences.Get("runLogin", "");
+                if (string.IsNullOrWhiteSpace(RunLogin))
+                    return;
+            }
 
             try
             {
@@ -95,21 +103,23 @@ namespace Mercurio.Driver.ViewModels
             if (selectedEvent == null)
                 return;
 
-            // The first event in the current list is the only "active" one.
-            // We compare the selected event with the first element of the collection.
-            bool isFirstEvent = Events.FirstOrDefault() == selectedEvent;
-            
+            bool isFirstEvent = Events.IndexOf(selectedEvent) == 0;
+            //bool isFirstEvent = Events.FirstOrDefault() == selectedEvent;
+
+            // ✅ como Events son pendientes, esto indica “cuántos pendientes quedan”
+            int pendingCount = Events?.Count ?? 0;
+
             if (selectedEvent.Name == "Pull-in" || selectedEvent.Name == "Pull-out")
-            {               
+            {
                 await Shell.Current.GoToAsync(nameof(PullOutDetailPage), new Dictionary<string, object>
                 {
                     { "EventDetail", selectedEvent },
-                    { "IsFirstEvent", isFirstEvent }
+                    { "IsFirstEvent", isFirstEvent },              // lo dejamos para no romper nada existente
+                    { "PendingEventsCount", pendingCount }         // ✅ nuevo
                 });
             }
             else
             {
-                
                 await Shell.Current.GoToAsync(nameof(EventDetailPage), new Dictionary<string, object>
                 {
                     { "EventDetail", selectedEvent },
@@ -141,6 +151,7 @@ namespace Mercurio.Driver.ViewModels
             // When the RunLogin property receives a value, events are loaded
             if (!string.IsNullOrWhiteSpace(value))
             {
+                Preferences.Set("runLogin", value);
                 _ = LoadEventsAsync();
             }
         }

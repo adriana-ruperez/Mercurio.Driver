@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 namespace Mercurio.Driver.ViewModels
 {
     [QueryProperty(nameof(ScheduleId), "ScheduleId")]
+    [QueryProperty(nameof(IsDriverSignature), "IsDriverSignature")]
     public partial class SignatureViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
@@ -23,12 +24,55 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
-        private bool CanSaveSignature => Lines.Any() && !IsBusy;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowLegalText))] // Notify change in visibility
+        [NotifyPropertyChangedFor(nameof(ShowSignaturePad))]
+        private bool _isDriverSignature;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SaveSignatureCommand))] 
+        [NotifyPropertyChangedFor(nameof(ShowLegalText))] // Notify change in visibility
+        [NotifyPropertyChangedFor(nameof(ShowSignaturePad))]
+        private bool _hasAcceptedTerms;
+
+        [ObservableProperty]
+        private string _legalText = "I hereby certify that all information provided regarding my activities during this shift is true, complete, and correct to the best of my knowledge. I further confirm that I completed the required pre-trip and post-trip vehicle inspection in accordance with company policy.";
+
+        // PROPERTY CALCULATED FOR THE XAML: Only legal sample if it is Driver and has NOT accepted
+        public bool ShowLegalText => IsDriverSignature && !HasAcceptedTerms;
+        public bool ShowSignaturePad => !IsDriverSignature || HasAcceptedTerms;
+        private bool CanSaveSignature => Lines.Any() && !IsBusy && (!IsDriverSignature || HasAcceptedTerms);
+        //private bool CanSaveSignature => Lines.Any() && !IsBusy;
 
         public SignatureViewModel(IScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
             Lines.CollectionChanged += OnLinesCollectionChanged;
+        }
+        
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.TryGetValue("IsDriverSignature", out var value))
+            {
+                IsDriverSignature = Convert.ToBoolean(value);
+            }
+
+            // If it is not a driver signature, we automatically accept terms
+            if (!IsDriverSignature)
+            {
+                HasAcceptedTerms = true;
+            }
+        }
+
+        // IT IS EXECUTED WHEN MAUI ASSIGNS THE VALUE BY NAVIGATION
+        partial void OnIsDriverSignatureChanged(bool value)
+        {
+            // If it is NOT a driver's signature (it is patient), we accept default terms
+            // so that the signature pad can be seen directly.
+            if (!value)
+            {
+                HasAcceptedTerms = true;
+            }
         }
 
         // This method will be executed every time a line is added or removed
@@ -38,7 +82,12 @@ namespace Mercurio.Driver.ViewModels
             SaveSignatureCommand.NotifyCanExecuteChanged();
         }
 
-
+        [RelayCommand]
+        private void AcceptTerms()
+        {
+            HasAcceptedTerms = true;           
+            ForceLandscape();
+        }
 
         [RelayCommand(CanExecute = nameof(CanSaveSignature))]
         private async Task SaveSignature()

@@ -12,10 +12,10 @@
 		<NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
 		
 		<!-- Propiedades Generales -->
-		<ApplicationTitle>Raphael by Milanes Transport</ApplicationTitle>
-		<ApplicationId>com.raphael.milanestransport</ApplicationId> <!-- Cambiar para producción -->
-		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
-		<ApplicationVersion>3</ApplicationVersion>
+		<ApplicationTitle>Raphael: Milanes Transport</ApplicationTitle> <!-- Cambiar para Android -->
+		<ApplicationId>com.raphael.milanestransport</ApplicationId> <!-- Cambiar para Android -->
+		<ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
+		<ApplicationVersion>8</ApplicationVersion>
 	</PropertyGroup>
 
 	<!-- =================================================================== -->

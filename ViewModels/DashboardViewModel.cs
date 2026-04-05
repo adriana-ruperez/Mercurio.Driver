@@ -69,6 +69,7 @@ namespace Mercurio.Driver.ViewModels
                 if (activeRun != null)
                 {                    
                     RunLogin = activeRun.SmartphoneLogin;
+                    Preferences.Set("runLogin", RunLogin);
                    
                     var pendingEvents = await _scheduleService.GetPendingSchedulesByRunAsync(activeRun.SmartphoneLogin, DateTime.Today);
                    

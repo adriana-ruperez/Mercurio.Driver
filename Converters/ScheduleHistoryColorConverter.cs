@@ -11,7 +11,6 @@ namespace Mercurio.Driver.Converters
             if (value is not ScheduleHistoryDto schedule)
                 return Colors.Gray;
         
-            // For completed events:
             if (schedule.Name == "Pull-out" || schedule.Name == "Pull-in")
                 return Colors.White; // The timeline for Pull-out in the image is white.
 

@@ -9,17 +9,17 @@
 
     <!-- STYLE FOR CARDS (FRAMES) -->
     <Style x:Key="CardViewStyle" TargetType="Frame">
-        <Setter Property="BackgroundColor" Value="#FF60879E" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColorMuted}" />
         
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="15" />
         <Setter Property="HasShadow" Value="False" />
-        <Setter Property="BorderColor" Value="#404040" />
+        <Setter Property="BorderColor" Value="{StaticResource BorderColor}" />
     </Style>
 
     <!-- STYLE FOR THE MAIN BUTTON -->
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="#0C517A" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryButtonBackgroundColor}" />
         
         <Setter Property="TextColor" Value="White" />
         <Setter Property="CornerRadius" Value="8" />

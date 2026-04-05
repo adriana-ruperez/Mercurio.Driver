@@ -5,47 +5,41 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              x:Class="Mercurio.Driver.Views.SignaturePage"
              x:DataType="viewmodels:SignatureViewModel"
+             xmlns:converters="clr-namespace:Mercurio.Driver.Converters" 
              Shell.NavBarIsVisible="False">
 
-    <Grid>
+    <ContentPage.Resources>
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
 
-        <!-- The DrawingView IS NOW THE FIRST ELEMENT (THE BACKGROUND LAYER) -->
-        <!-- It will expand to fill the entire screen, which is what we want. -->
-        <toolkit:DrawingView x:Name="SignatureView"
-                             Lines="{Binding Lines, Mode=TwoWay}"
-                             LineColor="Black"
-                             LineWidth="5"
-                             BackgroundColor="White"
-                             IsMultiLineModeEnabled="True"/>
+        <Grid BackgroundColor="White">
+        <!-- Signature Pad Layer -->
+        <Grid IsVisible="{Binding ShowSignaturePad}">
+            <toolkit:DrawingView x:Name="SignatureView" Lines="{Binding Lines, Mode=TwoWay}"
+                             LineColor="Black" LineWidth="5" BackgroundColor="White" IsMultiLineModeEnabled="True"/>
 
+            <HorizontalStackLayout VerticalOptions="End" HorizontalOptions="Center" Spacing="20" Padding="0,0,0,20">
+                <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="Transparent" TextColor="Red" BorderColor="Red" BorderWidth="1" WidthRequest="120" />
+                <Button Text="Done" Command="{Binding SaveSignatureCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="120"/>
+            </HorizontalStackLayout>
 
-        <HorizontalStackLayout VerticalOptions="End" 
-                               HorizontalOptions="Center" 
-                               Spacing="20" 
-                               Padding="0,0,0,20">
-           
-            <Button Text="Cancel" 
-                    Command="{Binding CancelCommand}" 
-                    BackgroundColor="Transparent" 
-                    TextColor="Red"
-                    BorderColor="Red"
-                    BorderWidth="1"
-                    WidthRequest="120" />
-          
-            <Button Text="Done" 
-                    Command="{Binding SaveSignatureCommand}" 
-                    BackgroundColor="Green" 
-                    TextColor="White"
-                    WidthRequest="120"/>
-        </HorizontalStackLayout>
+            <Button Text="Clear" Command="{Binding ClearSignatureCommand}" VerticalOptions="Start" HorizontalOptions="End" Margin="20" BackgroundColor="#E0E0E0" TextColor="Black"/>
+        </Grid>
 
-        <!-- This button will be positioned in the upper right corner -->
-        <Button Text="Clear" Command="{Binding ClearSignatureCommand}"
-                VerticalOptions="Start" HorizontalOptions="End" Margin="20" BackgroundColor="#E0E0E0" TextColor="Black"/>
+        <!-- Legal Layer -->
+        <Grid IsVisible="{Binding ShowLegalText}" BackgroundColor="White" Padding="30">
+            <Grid RowDefinitions="*, Auto">
+                <VerticalStackLayout Spacing="20" VerticalOptions="Center">
+                    <Label Text="DRIVER CERTIFICATION" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black"/>
+                    <Label Text="{Binding LegalText}" FontSize="18" HorizontalTextAlignment="Center" TextColor="#333"/>
+                </VerticalStackLayout>
+                <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" Spacing="20" Margin="0,20">
+                    <Button Text="DECLINE" Command="{Binding CancelCommand}" BackgroundColor="White" TextColor="Red" BorderColor="Red" BorderWidth="1" WidthRequest="150"/>
+                    <Button Text="I ACCEPT" Command="{Binding AcceptTermsCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="150"/>
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
 
-        <!-- THE ACTIVITY INDICATOR IS THE LAST LAYER (THE HIGHEST) -->
-        <!-- This ensures that it is visible above all else when active. -->
-        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
-                           HorizontalOptions="Center" VerticalOptions="Center" Color="Black" />
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center" Color="Black" />
     </Grid>
 </ContentPage>
