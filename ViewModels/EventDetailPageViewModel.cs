@@ -74,7 +74,7 @@ namespace Mercurio.Driver.ViewModels
             }
             else
             {
-                EventColor = Colors.Gray;
+                EventColor = (Color)Application.Current.Resources["ScheduleDefaultColor"];
 
             }
         }

@@ -6,26 +6,26 @@
              x:DataType="viewmodels:ContactViewModel"
              xmlns:converters="clr-namespace:Mercurio.Driver.Converters"
              Title="CONTACT"
-             BackgroundColor="#F0F0F0">
+             BackgroundColor="{StaticResource PageLightBackgroundColor}">
 
     <ContentPage.Resources>
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         
         <Style TargetType="Label" x:Key="HeaderLabel">
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="TextColor" Value="Gray"/>
+            <Setter Property="TextColor" Value="{StaticResource Gray}"/>
         </Style>
         <Style TargetType="Label" x:Key="ValueLabel">
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="TextColor" Value="Black"/>
+            <Setter Property="TextColor" Value="{StaticResource Black}"/>
         </Style>
         <Style TargetType="Entry" x:Key="ValueEntry">
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="TextColor" Value="Black"/>
+            <Setter Property="TextColor" Value="{StaticResource Black}"/>
         </Style>
         <Style TargetType="Button" x:Key="ActionButton">
-            <Setter Property="BackgroundColor" Value="#0C517A"/>
-            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+            <Setter Property="TextColor" Value="{StaticResource White}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Margin" Value="0,5"/>
             <Setter Property="ContentLayout" Value="Left, 10" />
@@ -38,7 +38,7 @@
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center"/>
 
             
-            <Border StrokeThickness="0" BackgroundColor="White" Padding="15"
+            <Border StrokeThickness="0" BackgroundColor="{StaticResource White}" Padding="15"
                     StrokeShape="RoundRectangle 8">
                 <VerticalStackLayout Spacing="15">
                     
@@ -78,7 +78,7 @@
                     <Button.ImageSource>
                         <FontImageSource FontFamily="FontAwesomeSolid"
                              Glyph="&#xf0c7;" 
-                             Color="White"
+                             Color="{StaticResource White}"
                              Size="16"/>
                     </Button.ImageSource>
                 </Button>
@@ -91,7 +91,7 @@
                     <Button.ImageSource>
                         <FontImageSource FontFamily="FontAwesomeSolid"
                              Glyph="&#xf095;" 
-                             Color="White"
+                             Color="{StaticResource White}"
                              Size="16"/>
                     </Button.ImageSource>
                 </Button>
@@ -104,7 +104,7 @@
                     <Button.ImageSource>
                         <FontImageSource FontFamily="FontAwesomeSolid"
                              Glyph="&#xf5a9;" 
-                             Color="White"
+                             Color="{StaticResource White}"
                              Size="16"/>
                     </Button.ImageSource>
                 </Button>

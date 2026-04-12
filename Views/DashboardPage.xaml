@@ -41,24 +41,24 @@
                         
                         <Grid ColumnDefinitions="7, *">
                             
-                            <BoxView Grid.Column="0" Color="#0C517A" />
+                            <BoxView Grid.Column="0" Color="{StaticResource Primary}" />
                           
                             <Grid Grid.Column="1" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Padding="15">
-                                <Label Text="Run Info" FontSize="Large" FontAttributes="Bold" Grid.Column="0" TextColor="White"/>
+                                <Label Text="Run Info" FontSize="Large" FontAttributes="Bold" Grid.Column="0" TextColor="{StaticResource White}"/>
                                 <Image Grid.Column="1" HeightRequest="24" WidthRequest="24" Source="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='&#xf5e4;', Color=White}"/>
 
                                 <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="5" Margin="0,15,0,0">
                                     <Grid ColumnDefinitions="Auto, *">
-                                        <Label Text="Driver:" Grid.Column="0" TextColor="LightGray"/>
-                                        <Label Text="{Binding DriverName}" Grid.Column="1" HorizontalOptions="End" TextColor="White" />
+                                        <Label Text="Driver:" Grid.Column="0" TextColor="{StaticResource LightGray}"/>
+                                        <Label Text="{Binding DriverName}" Grid.Column="1" HorizontalOptions="End" TextColor="{StaticResource White}" />
                                     </Grid>
                                     <Grid ColumnDefinitions="Auto, *">
-                                        <Label Text="Run:" Grid.Column="0" TextColor="LightGray"/>
-                                        <Label Text="{Binding RunName}" Grid.Column="1" HorizontalOptions="End" TextColor="White" />
+                                        <Label Text="Run:" Grid.Column="0" TextColor="{StaticResource LightGray}"/>
+                                        <Label Text="{Binding RunName}" Grid.Column="1" HorizontalOptions="End" TextColor="{StaticResource White}" />
                                     </Grid>
                                     <Grid ColumnDefinitions="Auto, *">
-                                        <Label Text="Vehicle:" Grid.Column="0" TextColor="LightGray"/>
-                                        <Label Text="{Binding VehicleName}" Grid.Column="1" HorizontalOptions="End" TextColor="White" />
+                                        <Label Text="Vehicle:" Grid.Column="0" TextColor="{StaticResource LightGray}"/>
+                                        <Label Text="{Binding VehicleName}" Grid.Column="1" HorizontalOptions="End" TextColor="{StaticResource White}" />
                                     </Grid>
                                 </VerticalStackLayout>
                             </Grid>
@@ -77,8 +77,8 @@
                                 
                                 <StackLayout Orientation="Horizontal" Spacing="5">
                                     
-                                    <Label Text="{Binding NextEvent, Converter={StaticResource ScheduleDisplayTimeConverter}}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
-                                    <Label Text="-" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                    <Label Text="{Binding NextEvent, Converter={StaticResource ScheduleDisplayTimeConverter}}" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource White}"/>
+                                    <Label Text="-" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource White}"/>
                                    
                                     <StackLayout Orientation="Horizontal" Spacing="5">
                                         <StackLayout.Triggers>
@@ -89,12 +89,12 @@
                                                 <Setter Property="IsVisible" Value="False" />
                                             </DataTrigger>
                                         </StackLayout.Triggers>
-                                        <Label Text="{Binding NextEvent.EventType}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
-                                        <Label Text="{Binding NextEvent.TripType, Converter={StaticResource TripTypeConverter}}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                        <Label Text="{Binding NextEvent.EventType}" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource White}"/>
+                                        <Label Text="{Binding NextEvent.TripType, Converter={StaticResource TripTypeConverter}}" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource White}"/>
                                     </StackLayout>
 
                                     <!-- Pull-out -->
-                                    <Label Text="Pull Out" FontSize="Large" FontAttributes="Bold" TextColor="White" IsVisible="False">
+                                    <Label Text="Pull Out" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource White}" IsVisible="False">
                                         <Label.Triggers>
                                             <DataTrigger TargetType="Label" Binding="{Binding NextEvent.Name}" Value="Pull-out">
                                                 <Setter Property="IsVisible" Value="True" />
@@ -103,7 +103,7 @@
                                     </Label>
 
                                     <!-- Pull-in -->
-                                    <Label Text="Pull In" FontSize="Large" FontAttributes="Bold" TextColor="White" IsVisible="False">
+                                    <Label Text="Pull In" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource White}" IsVisible="False">
                                         <Label.Triggers>
                                             <DataTrigger TargetType="Label" Binding="{Binding NextEvent.Name}" Value="Pull-in">
                                                 <Setter Property="IsVisible" Value="True" />
@@ -118,7 +118,7 @@
                                 <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="10" Margin="0,15,0,0">
                                     <Image HeightRequest="20" WidthRequest="20" VerticalOptions="Start" Source="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='&#xf3c5;', Color=White}"/>
                                     <VerticalStackLayout>
-                                        <Label Text="{Binding NextEvent.Address}" TextColor="White"/>
+                                        <Label Text="{Binding NextEvent.Address}" TextColor="{StaticResource White}"/>
                                                                                 
                                     </VerticalStackLayout>
                                 </StackLayout>
@@ -131,15 +131,15 @@
                     <!-- ==================================================================== -->
                     <Frame Style="{StaticResource CardViewStyle}" Padding="0">
                             <Grid ColumnDefinitions="7, *">
-                                <BoxView Grid.Column="0" Color="#FF76AAC7" />
+                                <BoxView Grid.Column="0" Color="{StaticResource Tertiary}" />
                         
                             <VerticalStackLayout Grid.Column="1" Padding="15">
-                                <Label Text="Today's Events" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                <Label Text="Today's Events" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource White}"/>
                                 <Label Margin="0,5,0,0">
                                     <Label.FormattedText>
                                         <FormattedString>
-                                            <Span Text="{Binding RemainingEventsCount}" FontAttributes="Bold" TextColor="White"/>
-                                            <Span Text=" Events Remaining" TextColor="LightGray"/>
+                                            <Span Text="{Binding RemainingEventsCount}" FontAttributes="Bold" TextColor="{StaticResource White}"/>
+                                            <Span Text=" Events Remaining" TextColor="{StaticResource LightGray}"/>
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
@@ -159,11 +159,11 @@
 
     </Grid>
 
-        <!--<Grid IsVisible="{Binding IsBusy}" BackgroundColor="#80000000">
+        <!--<Grid IsVisible="{Binding IsBusy}" BackgroundColor="{StaticResource OverlayScrimColor}">
             
 
             <Border BackgroundColor="{StaticResource AppDarkBackgroundColor}" 
-                    Stroke="LightGray"
+                    Stroke="{StaticResource LightGray}"
                     StrokeThickness="1"
                     Padding="30" 
                     HorizontalOptions="Center" 
@@ -172,7 +172,7 @@
 
                 <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
                     <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
-                    <Label Text="Loading..." TextColor="White" HorizontalTextAlignment="Center" />
+                    <Label Text="Loading..." TextColor="{StaticResource White}" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
             </Border>

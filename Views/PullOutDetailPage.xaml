@@ -137,7 +137,7 @@
         </Grid>
 
         <!-- Details Section -->
-        <Label Text="DETAILS" Margin="15,20,15,5" FontSize="14" TextColor="Gray" HorizontalOptions="Center" FontAttributes="Bold"/>
+        <Label Text="DETAILS" Margin="15,20,15,5" FontSize="14" TextColor="{StaticResource Gray}" HorizontalOptions="Center" FontAttributes="Bold"/>
 
             <Border StrokeThickness="0" BackgroundColor="{StaticResource CardBackgroundColor}" Padding="15" Margin="10,0"
                 StrokeShape="RoundRectangle 5">
@@ -152,7 +152,7 @@
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="ADDRESS "/>
-                                    <Span Text="(Tap to Copy)" TextColor="#1E90FF"/>
+                                    <Span Text="(Tap to Copy)" TextColor="{StaticResource LinkColor}"/>
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>

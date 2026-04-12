@@ -11,10 +11,10 @@
              Title="FUTURE SCHEDULE"
              Shell.NavBarIsVisible="False"
              ios:Page.UseSafeArea="True"
-             BackgroundColor="#F0F0F0">
+             BackgroundColor="{StaticResource PageLightBackgroundColor}">
 
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="#0C517A" StatusBarStyle="LightContent" />
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Primary}" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
 
     <ContentPage.Resources>
@@ -28,7 +28,7 @@
         <Style TargetType="Label" x:Key="IconLabel">
             <Setter Property="FontFamily" Value="FontAwesomeSolid" />
             <Setter Property="FontSize" Value="16" />
-            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="TextColor" Value="{StaticResource Black}" />
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="WidthRequest" Value="25"/>
         </Style>
@@ -37,8 +37,8 @@
         <Style TargetType="Button" x:Key="TopBarIconBtn">
             <Setter Property="FontFamily" Value="FontAwesomeSolid" />
             <Setter Property="FontSize" Value="18" />
-            <Setter Property="TextColor" Value="White" />
-            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource White}" />
+            <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
             <Setter Property="Padding" Value="8" />
             <Setter Property="WidthRequest" Value="44" />
             <Setter Property="HeightRequest" Value="44" />
@@ -47,11 +47,11 @@
     </ContentPage.Resources>
 
     <!-- Root: TopBar + Content -->
-    <Grid RowDefinitions="Auto,*" BackgroundColor="#F0F0F0">
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource PageLightBackgroundColor}">
 
         <!-- ✅ TOP BAR MANUAL -->
         <Grid Grid.Row="0"
-              BackgroundColor="#0C517A"
+              BackgroundColor="{StaticResource Primary}"
               ColumnDefinitions="Auto,*,Auto"
               Padding="{OnPlatform Android='8,25,8,10', iOS='8,18,8,10'}">
 
@@ -63,7 +63,7 @@
             <!-- Title -->
             <Label Grid.Column="1"
                    Text="FUTURE SCHEDULE"
-                   TextColor="White"
+                   TextColor="{StaticResource White}"
                    FontSize="18"
                    FontAttributes="Bold"
                    HorizontalTextAlignment="Center"
@@ -82,7 +82,7 @@
                      Command="{Binding LoadEventsCommand}"
                      IsRefreshing="{Binding IsBusy}">
 
-            <Grid RowDefinitions="*" BackgroundColor="#F0F0F0">
+            <Grid RowDefinitions="*" BackgroundColor="{StaticResource PageLightBackgroundColor}">
 
                 <Grid>
                     <CollectionView ItemsSource="{Binding Events}"
@@ -92,11 +92,11 @@
 
                             <DataTemplate x:DataType="dto:ScheduleDto">
                                 <Border StrokeThickness="1"
-                                        Stroke="#DDDDDD"
+                                        Stroke="{StaticResource Gray250}"
                                         Margin="10,0,10,10"
                                         StrokeShape="RoundRectangle 5"
                                         Padding="0"
-                                        BackgroundColor="White">
+                                        BackgroundColor="{StaticResource White}">
                                     <Border.GestureRecognizers>
                                         <!-- ✅ FIX: AncestorType correcto (FutureScheduleViewModel) -->
                                         <TapGestureRecognizer
@@ -128,12 +128,12 @@
                                                             <Setter Property="IsVisible" Value="False" />
                                                         </MultiTrigger>
                                                     </Grid.Triggers>
-                                                    <Label Text="{Binding SpaceType}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start" />
-                                                    <Label Text="{Binding FundingSource}" TextColor="White" FontAttributes="Bold" HorizontalOptions="End" />
+                                                    <Label Text="{Binding SpaceType}" TextColor="{StaticResource White}" FontAttributes="Bold" HorizontalOptions="Start" />
+                                                    <Label Text="{Binding FundingSource}" TextColor="{StaticResource White}" FontAttributes="Bold" HorizontalOptions="End" />
                                                 </Grid>
 
                                                 <!-- Panel for "Pull-in" case -->
-                                                <Label Text="Perform Pull In" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
+                                                <Label Text="Perform Pull In" IsVisible="False" TextColor="{StaticResource White}" FontAttributes="Bold" HorizontalOptions="Start">
                                                     <Label.Triggers>
                                                         <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
                                                             <Setter Property="IsVisible" Value="True" />
@@ -142,7 +142,7 @@
                                                 </Label>
 
                                                 <!-- Panel for "Pull-out" case -->
-                                                <Label Text="Perform Pull Out" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
+                                                <Label Text="Perform Pull Out" IsVisible="False" TextColor="{StaticResource White}" FontAttributes="Bold" HorizontalOptions="Start">
                                                     <Label.Triggers>
                                                         <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
                                                             <Setter Property="IsVisible" Value="True" />
@@ -156,7 +156,7 @@
                                                 <Grid ColumnDefinitions="*, Auto">
                                                     <StackLayout Orientation="Horizontal" Spacing="5">
                                                         <Label Text="{Binding ETA, StringFormat='{0:hh\\:mm tt}'}" FontSize="20" FontAttributes="Bold" VerticalOptions="End"/>
-                                                        <Label Text="ETA" TextColor="Gray" FontSize="12" VerticalOptions="End" Margin="0,0,0,2"/>
+                                                        <Label Text="ETA" TextColor="{StaticResource Gray}" FontSize="12" VerticalOptions="End" Margin="0,0,0,2"/>
                                                     </StackLayout>
 
                                                     <!-- RIGHT PANEL WITH CONDITIONAL LOGIC -->
@@ -219,7 +219,7 @@
                                                                 </Label.Triggers>
                                                             </Label>
 
-                                                            <Label Text="" FontFamily="FontAwesomeSolid" FontSize="22" TextColor="Black" VerticalTextAlignment="Center"/>
+                                                            <Label Text="" FontFamily="FontAwesomeSolid" FontSize="22" TextColor="{StaticResource Black}" VerticalTextAlignment="Center"/>
                                                         </StackLayout>
                                                     </Grid>
                                                 </Grid>
@@ -228,7 +228,7 @@
                                                     <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
                                                     <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="5">
                                                         <Label Text="{Binding ., Converter={StaticResource ScheduleDisplayTimeConverter}}" />
-                                                        <Label Text="{Binding ., Converter={StaticResource ScheduleTimeLabelConverter}}" TextColor="Gray"/>
+                                                        <Label Text="{Binding ., Converter={StaticResource ScheduleTimeLabelConverter}}" TextColor="{StaticResource Gray}"/>
                                                     </StackLayout>
                                                 </Grid>
 
@@ -253,7 +253,7 @@
                            IsVisible="{Binding ShowNoEventsMessage}"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="Gray"
+                           TextColor="{StaticResource Gray}"
                            FontSize="18"/>
                 </Grid>
             </Grid>

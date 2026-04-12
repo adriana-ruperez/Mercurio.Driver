@@ -96,7 +96,8 @@ namespace Mercurio.Driver.ViewModels
             try
             {
                 // Convert the signature to a stream image
-                var signatureStream = await DrawingView.GetImageStream(Lines, new Size(600, 300), Colors.White);
+                var signatureBackgroundColor = (Color)Application.Current.Resources["White"];
+                var signatureStream = await DrawingView.GetImageStream(Lines, new Size(600, 300), signatureBackgroundColor);
 
                 // Convert stream to byte[]
                 using var memoryStream = new MemoryStream();

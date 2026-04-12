@@ -18,7 +18,7 @@
     </ContentPage.Resources>
         
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="#0C517A" StatusBarStyle="LightContent" />
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Primary}" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
 
     <Grid>
@@ -51,8 +51,8 @@
          
             <!--<Border StrokeShape="RoundRectangle 10"
                     StrokeThickness="1" 
-                    Stroke="#CCCCCC" 
-                    BackgroundColor="White" 
+                    Stroke="{StaticResource BorderColor}" 
+                    BackgroundColor="{StaticResource White}" 
                     Padding="15,0" 
                     HeightRequest="50">
                 <Entry Placeholder="Vehicle Login"
@@ -65,8 +65,8 @@
             <Button Text="TODAY'S SCHEDULE"
                     Command="{Binding GoToTodayScheduleCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                    BackgroundColor="#0C517A"
-                    TextColor="White"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="{StaticResource White}"
                     HeightRequest="55"
                     CornerRadius="10"
                     FontSize="18"
@@ -77,8 +77,8 @@
             <Button Text="FUTURE SCHEDULE"
                     Command="{Binding GoToFutureScheduleCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                    BackgroundColor="#FF538CAC"
-                    TextColor="White"
+                    BackgroundColor="{StaticResource Secondary}"
+                    TextColor="{StaticResource White}"
                     HeightRequest="55"
                     CornerRadius="10"
                     FontSize="18"
@@ -89,7 +89,7 @@
                            IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           Color="#0C517A"
+                           Color="{StaticResource Primary}"
                            HeightRequest="50"
                            WidthRequest="50"/>
         

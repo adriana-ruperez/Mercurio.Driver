@@ -12,7 +12,7 @@
             FontFamily="FontAwesomeSolid"
             FontSize="80"
             HorizontalOptions="Center"
-            TextColor="Gray"/>
+            TextColor="{StaticResource Gray}"/>
             <Label 
             Text="Functionality Coming Soon"
             FontSize="22"
