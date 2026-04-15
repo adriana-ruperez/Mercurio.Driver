@@ -365,3 +365,5 @@ FodyWeavers.xsd
 # Private settings
 # file for VS Code, containing potentially sensitive information like API keys, database connection strings, etc.
 PrivateSettings.cs
+
+mercurio-upload.keystore
